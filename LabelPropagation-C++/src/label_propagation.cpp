@@ -64,3 +64,50 @@ int main(int, char**) {
 
     return 0;
 }
+
+
+void findCommunities(HyperGraph h){
+
+}
+
+int computeVertexLabel(HyperGraph h, int v, std::map<int, int> vlabel, std::map<int, int> helabels, MT::MersenneTwist rng){
+
+    //hesᵥ = gethyperedges(h, v)
+    
+    std::map<int, int> vL;
+
+    int max = 0;
+    std::set<int> maxL;
+    std::set<int>::iterator maxLiter;
+
+
+    // for v in shuffle!(rng, collect(keys(vₑ)))
+    
+    
+    
+    
+    
+    maxLiter = maxL.begin();
+    return *maxLiter;
+}
+
+int computeEdgeLabel(HyperGraph h, int v, std::map<int, int> vlabel, std::map<int, int> helabels, MT::MersenneTwist rng){
+   
+    //hesᵥ = gethyperedges(h, v)
+    
+    std::map<int, int> vL;
+
+    int max = 0;
+    std::set<int> maxL;
+    std::set<int>::iterator maxLiter;
+
+
+    // for v in shuffle!(rng, collect(keys(vₑ)))
+    
+    
+    
+    
+    
+    maxLiter = maxL.begin();
+    return *maxLiter;
+}
