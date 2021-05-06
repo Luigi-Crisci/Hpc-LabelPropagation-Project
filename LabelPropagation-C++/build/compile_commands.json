@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/luigi/hpc/project/LabelPropagation-C++/build/src",
-  "command": "/bin/clang++-11   -I/home/luigi/hpc/project/LabelPropagation-C++/src  -Wall -Wextra -O0 -Wno-dev -g   -fopenmp=libomp -o CMakeFiles/label_propagation.dir/label_propagation.cpp.o -c /home/luigi/hpc/project/LabelPropagation-C++/src/label_propagation.cpp",
-  "file": "/home/luigi/hpc/project/LabelPropagation-C++/src/label_propagation.cpp"
-}
-]

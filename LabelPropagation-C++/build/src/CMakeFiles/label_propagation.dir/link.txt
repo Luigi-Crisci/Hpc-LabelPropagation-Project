@@ -1,1 +1,0 @@
-/bin/clang++-11  -Wall -Wextra -O0 -Wno-dev -g  -rdynamic CMakeFiles/label_propagation.dir/label_propagation.cpp.o  -o ../bin/label_propagation  -lomp -lpthread 
