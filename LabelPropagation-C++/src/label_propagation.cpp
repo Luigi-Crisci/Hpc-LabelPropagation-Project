@@ -12,7 +12,7 @@
 
 //Macros
 #define GETHYPEREDGES(h, v)  std::cout<<"h v="<<v<<std::endl
-#define GENRANDOM(rng) static_cast<int>(rng.genrand_real1()*NMAX)
+#define GENRANDOM(rng, RANDMAX) static_cast<int>(rng.genrand_real1()*RANDMAX)
 
 
 /*
@@ -110,4 +110,20 @@ int computeEdgeLabel(HyperGraph h, int v, std::map<int, int> vlabel, std::map<in
     
     maxLiter = maxL.begin();
     return *maxLiter;
+}
+
+
+void shuffle(int *array, size_t n, MT::MersenneTwist rng)
+{
+    if (n > 1) 
+    {
+        size_t i;
+        for (i = 0; i < n - 1; i++) 
+        {
+          size_t j = i + GENRANDOM(rng, RAND_MAX);
+          int t = array[j];
+          array[j] = array[i];
+          array[i] = t;
+        }
+    }
 }
