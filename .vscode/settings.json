@@ -1,5 +1,4 @@
 {
-	"julia.environmentPath": "/home/luigi/hpc/project/LabelPropagation-Julia",
 	"files.associations": {
 		"*.inc": "ini",
 		"atomic": "cpp",
@@ -43,6 +42,7 @@
 		"xstring": "cpp",
 		"xtr1common": "cpp",
 		"xtree": "cpp",
-		"xutility": "cpp"
+		"xutility": "cpp",
+		"vector": "cpp"
 	}
 }
