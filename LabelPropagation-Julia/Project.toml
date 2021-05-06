@@ -3,6 +3,10 @@ uuid = "2f911bc9-7fab-4f39-9bd0-b7f8d22c6a03"
 authors = ["Luigi Crisci <luigicrisci1997@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SimpleHypergraphs = "aa4a32ff-dd5d-5357-90e3-e7a9512f0501"
+
 [compat]
 julia = "1"
 

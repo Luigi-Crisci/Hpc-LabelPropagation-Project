@@ -1,6 +1,7 @@
 module LabelPropagation
 
 using SimpleHypergraphs
+using Random
 
 export findcommunities
 

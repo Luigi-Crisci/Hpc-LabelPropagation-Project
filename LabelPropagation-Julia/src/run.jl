@@ -1,4 +1,3 @@
-using LabelPropagation
+using LabelPropagation, SimpleHypergraphs
 
 ### Write code here
-
