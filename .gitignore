@@ -1,4 +1,4 @@
 .vscode/c_cpp_properties.json
 LabelPropagation-C++/build
 LabelPropagation-C++/build/run.sh
-LabelPropagation-C++/Manifest.toml
+LabelPropagation-Julia/Manifest.toml
