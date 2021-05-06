@@ -4,16 +4,18 @@
 #include <set>
 #include <iterator>
 #include "mtrnd.h"
+#include <vector>
 
 // Defines values used by the algorithm according to the paper
 #define MAXITER 100
 #define SEED time(NULL) // ¯\_(ツ)_/¯ 
-#define NMAX 1000 // max number, should be somewhat related to the size of the hgraph
+#define RANDMAX 1000 // max number, should be somewhat related to the size of the hgraph
 
 //Macros
 #define GETHYPEREDGES(h, v)  std::cout<<"h v="<<v<<std::endl
-#define GENRANDOM(rng, RANDMAX) static_cast<int>(rng.genrand_real1()*RANDMAX)
+#define GENRANDOM(rng) static_cast<int>(rng.genrand_real1()*RANDMAX)
 
+void shuffle(int *array, size_t n, MT::MersenneTwist rng);
 
 /*
     Hyper-vertex structure
@@ -56,11 +58,18 @@ int main(int, char**) {
     //create hypergraph
     HyperGraph h;
     
+    int vec[10] = {1,2,3,4,5,6,7,8,9,10};
 
     for(int i=0; i<10; i++){
-        std::cout << GENRANDOM(rng) << std::endl;
+         std::cout<<"i="<<vec[i]<<std::endl;
     }
 
+    std::cout<<std::endl<<std::endl<<std::endl<<std::endl;
+    shuffle(vec, 10, rng);
+
+    for(int i=0; i<10; i++){
+          std::cout<<"i="<<vec[i]<<std::endl;
+    }
 
     return 0;
 }
@@ -120,7 +129,7 @@ void shuffle(int *array, size_t n, MT::MersenneTwist rng)
         size_t i;
         for (i = 0; i < n - 1; i++) 
         {
-          size_t j = i + GENRANDOM(rng, RAND_MAX);
+          size_t j = i + GENRANDOM(rng) / (RAND_MAX / (n - i) + 1);
           int t = array[j];
           array[j] = array[i];
           array[i] = t;
