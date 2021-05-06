@@ -33,14 +33,6 @@ typedef struct HyperGraph
         hVertex = new std::vector<std::vector<int> *>(nVertex, new std::vector<int>(nEdge));
     }
 
-    ~HyperGraph()
-    {
-        for (auto vet : *hVertex)
-            delete vet;
-
-        delete hVertex;
-    }
-
 } HyperGraph;
 
 bool is_hypergraph_connected(HyperGraph h);
@@ -151,8 +143,9 @@ void shuffle(int *array, size_t n, MT::MersenneTwist rng)
 
 void get_connected_component(HyperGraph h, std::vector<int> * visited, std::vector<int>* connected_comp, int v)
 {
-    std::cout<<"Processing node "<<v<<std::endl;
     (*visited)[v] = 1;
+    connected_comp->push_back(v);
+
     Int_Matrix hVertex = h.hVertex;
     for(int e = 0; e < h.nEdge; e++){
         if(hVertex->at(v)->at(e) == 1){
@@ -161,14 +154,10 @@ void get_connected_component(HyperGraph h, std::vector<int> * visited, std::vect
                 if((*visited)[j] == 1)
                     continue;
                 if(hVertex->at(j)->at(e) == 1)
-                    (*visited)[j] = 1;
-                    connected_comp->push_back(j);
                     get_connected_component(h,visited,connected_comp,j);
             }
         }
-        std::cout<<"Exiting edge "<<e<<" for node "<<v<<std::endl;
     }
-    std::cout<<"Exiting node "<<v<<std::endl;
 }
 
 bool is_hypergraph_connected(HyperGraph h)
@@ -178,8 +167,6 @@ bool is_hypergraph_connected(HyperGraph h)
 
     get_connected_component(h, &visited, &connected_comp, 0);
     
-    std::cout<<"Size: "<<connected_comp.size()<<std::endl;
-
     return connected_comp.size() == h.nVertex ? true : false;
 }
 
