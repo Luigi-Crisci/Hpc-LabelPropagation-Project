@@ -1,1 +1,1 @@
-# LabelPropagation
+# LabelPropagation-Julia
