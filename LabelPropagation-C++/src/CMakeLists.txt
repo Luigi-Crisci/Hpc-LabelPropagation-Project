@@ -5,6 +5,7 @@ target_link_libraries(label_propagation PRIVATE OpenMP::OpenMP_CXX)
 target_sources(label_propagation
   PUBLIC
 	label_propagation.cpp
+  mtrnd.h
 )
 
 target_include_directories(label_propagation

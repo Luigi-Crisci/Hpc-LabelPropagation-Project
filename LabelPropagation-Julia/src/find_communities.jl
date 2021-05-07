@@ -86,6 +86,7 @@ function findcommunities(h::Hypergraph, method::CFLabelPropagationFinder)
         )
     end
 
+
     labels = Array{Int}(undef, nhv(h))
     for i in 1:nhv(h)
         labels[i] = vlabels[i]
