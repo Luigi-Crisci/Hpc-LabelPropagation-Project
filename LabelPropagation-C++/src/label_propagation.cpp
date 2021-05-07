@@ -5,6 +5,7 @@
 #include <iterator>
 #include "mtrnd.h"
 #include <vector>
+#include <assert.h>
 
 // Defines values used by the algorithm according to the paper
 #define MAXITER 100
@@ -30,7 +31,12 @@ typedef struct HyperGraph
     {
         this->nVertex = nVertex;
         this->nEdge = nEdge;
-        hVertex = new std::vector<std::vector<int> *>(nVertex, new std::vector<int>(nEdge));
+        hVertex = new std::vector<std::vector<int> *>(nVertex);
+        for(int i = 0; i < nVertex; i++){
+            (*hVertex)[i] = new std::vector<int>(nEdge);
+        }
+
+
     }
 
 } HyperGraph;
@@ -48,9 +54,12 @@ int main(int, char **)
 
     //create hypergraph
     HyperGraph h(10,2);
+
     for(int i = 0; i < h.nVertex; i++){
         for(int j = 0; j < h.nEdge; j++){
-            (*h.hVertex)[i]->insert((*h.hVertex)[i]->begin() + j, 1);
+            if(rng.genrand_real1() <= 0.8 ){
+                (*h.hVertex)[i]->insert((*h.hVertex)[i]->begin() + j, 1);
+            }
         }
     }
 
@@ -90,6 +99,9 @@ int main(int, char **)
 
 void findCommunities(HyperGraph h)
 {
+    assert(is_hypergraph_connected(h));
+
+    
 }
 
 int computeVertexLabel(HyperGraph h, int v, std::map<int, int> vlabel, std::map<int, int> helabels, MT::MersenneTwist rng)
@@ -169,31 +181,3 @@ bool is_hypergraph_connected(HyperGraph h)
     
     return connected_comp.size() == h.nVertex ? true : false;
 }
-
-/*
-        function get_connected_components(h::Hypergraph)
-            visited = falses(nhv(h))
-            cc = Vector{Int}[]
-                for i in 1:nhv(h)
-                    if !visited[i]
-                        s = Int[]
-                        _walk!(h, s, i, visited)
-                        push!(cc, s)
-                end
-            end
-            cc
-        end
-
-
-
-        function _walk!(h::Hypergraph, s::AbstractVector{Int}, i::Int, visited::AbstractVector{Bool})
-            visited[i] && return
-            visited[i] = true
-            push!(s, i)
-            for he in keys(gethyperedges(h, i))
-                for j in keys(getvertices(h, he))
-                    _walk!(h, s, j, visited)
-                end
-            end
-        end
-    */
