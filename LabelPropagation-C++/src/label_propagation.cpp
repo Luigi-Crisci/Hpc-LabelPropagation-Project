@@ -31,7 +31,7 @@ typedef struct CFLabelPropagationFinder
 typedef struct HyperGraph
 {
     int nVertex, nEdge;
-    Int_Matrix hVertex;
+    Int_Matrix hVertex, hEdge;
 
     HyperGraph(int nVertex, int nEdge)
     {
@@ -103,6 +103,15 @@ int main(int, char **)
     }
 
     return 0;
+}
+
+std::vector<int> *get_edges(HyperGraph *h, int vertices)
+{
+    std::vector<int> *edges = new std::vector<int>;
+    for (int i = 0; i < h->nEdge;i++)
+        if(h->hEdge->at(i)->at(vertices)==1)
+            edges->push_back(i);
+    return edges;
 }
 
 std::vector<int> *get_vertices(HyperGraph *h, int edge)
@@ -177,21 +186,39 @@ void findCommunities(HyperGraph *h, CFLabelPropagationFinder parameters)
     
 }
 
-int compute_vertex_label(HyperGraph *h, int v, std::map<int, int> *vlabel, std::map<int, int> *helabels, MT::MersenneTwist rng)
+int compute_vertex_label(HyperGraph *h, int v, std::map<int, int> *vlabel, std::map<int, int> *vlabels, MT::MersenneTwist rng)
 {
-
-    //hesᵥ = gethyperedges(h, v)
-
-    std::map<int, int> vL;
+    std::vector<int> *edges = get_edges(h, v);
+    std::map<int, int> *vertex_label_list = new std::map<int, int>;
 
     int max = 0;
-    std::set<int> maxL;
-    std::set<int>::iterator maxLiter;
+    int current_label, current_edge;
 
-    // for v in shuffle!(rng, collect(keys(vₑ)))
+    std::set<int> *max_vertex_label_found = new std::set<int>;
 
-    maxLiter = maxL.begin();
-    return *maxLiter;
+    shuffle(edges, rng);
+    for (int i = 0, size = edges->size(); i < size;i++)
+    {
+        current_edge = edges->at(i);
+        current_label = vlabel->at(current_edge);
+
+        if(vertex_label_list->count(current_label)==1)
+            vertex_label_list->insert({current_label, vertex_label_list->at(current_label) + 1});
+        else
+            vertex_label_list->insert(current_label, 1);
+
+        if(vertex_label_list->at(current_label)>max)
+            max = vertex_label_list->at(current_label);
+            max_vertex_label_found->erase(max_vertex_label_found->begin(), max_vertex_label_found->end());
+            max_vertex_label_found->insert(current_label);
+
+        if(vertex_label_list->at(current_label)== max)
+            max_vertex_label_found->insert(current_label);
+    }
+
+    if (vlabels->count(v) && max_vertex_label_found->find(vlabels->at(v)) != max_vertex_label_found->end())
+        return vlabels->at(v);
+    return *(max_vertex_label_found->begin());
 }
 
 int compute_edge_label(HyperGraph *h, int e, std::map<int, int> *vlabel, std::map<int, int> *helabels, MT::MersenneTwist rng)
@@ -214,7 +241,8 @@ int compute_edge_label(HyperGraph *h, int e, std::map<int, int> *vlabel, std::ma
 
         if(edge_label_list->at(current_label) == max)
             max_edge_label_found->insert(current_label);
-        else if(edge_label_list->at(current_label) > max){
+        else if(edge_label_list->at(current_label) > max)
+        {
             max = edge_label_list->at(current_label);
             max_edge_label_found->erase(max_edge_label_found->begin(),max_edge_label_found->end());
             max_edge_label_found->insert(current_label);

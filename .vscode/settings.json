@@ -1,4 +1,5 @@
 {
+	"julia.environmentPath": "/home/peppe/myspace/projectHPC/Hpc-LabelPropagation-Project/LabelPropagation-Julia",
 	"files.associations": {
 		"*.inc": "ini",
 		"atomic": "cpp",
