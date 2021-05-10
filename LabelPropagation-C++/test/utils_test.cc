@@ -5,6 +5,8 @@
 
 void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n, HyperGraph hyper_graph, bool connected)
 {
+
+    //TODO:: this method shoudl actually statically create an hypergraph of said dimension connected or disconnected
   float p = 0.6;
 
   if(connected){
@@ -81,7 +83,7 @@ bool create_and_reverse_map(std::map<int, int> *map, int quo){
     return flag;
 }
 
-TEST(UtilsTest, IsHypergraphConnected)
+TEST(LabelPropagationNaiveCPort, IsHypergraphConnected)
 {
   MT::MersenneTwist rng;
   rng.init_genrand(SEED);
@@ -98,7 +100,7 @@ TEST(UtilsTest, IsHypergraphConnected)
   ASSERT_EQ(false, is_hypergraph_connected(&h_disconnected)); 
 }
 
-TEST(UtilsTest, FindCommunitiesTest)
+TEST(LabelPropagationNaiveCPort, FindCommunities)
 {
   MT::MersenneTwist rng;
   rng.init_genrand(SEED);
@@ -149,7 +151,7 @@ TEST(UtilsTest, FindCommunitiesTest)
   ASSERT_NO_FATAL_FAILURE(find_communities(&h_connected, method));
 }
 
-TEST(UtilsTest, ShuffleTest)
+TEST(LabelPropagationNaiveCPort, Shuffle)
 {//pippo
     MT::MersenneTwist rng;
     rng.init_genrand(SEED);
@@ -170,7 +172,7 @@ TEST(UtilsTest, ShuffleTest)
     EXPECT_TRUE(is_set_equal_to_vector(array, set));
 }
 
-TEST(UtilsTest, ReverseMapTest)
+TEST(LabelPropagationNaiveCPort, ReverseMap)
 {
     std::map<int, int> *map = new std::map<int, int>();
 
@@ -194,7 +196,7 @@ TEST(UtilsTest, ReverseMapTest)
     EXPECT_TRUE(create_and_reverse_map(map, 1));
 }
 
-TEST(UtilsTest, GetEdges)
+TEST(LabelPropagationNaiveCPort, GetEdges)
 {
     MT::MersenneTwist rng;
     rng.init_genrand(SEED);
@@ -219,9 +221,22 @@ TEST(UtilsTest, GetEdges)
     }
 
     EXPECT_TRUE(disconnected_edge_found);
+    if(!disconnected_edge_found){
+        std::cout << "Disconnected hypegraph" << std::endl;
+        for (int i = 0; i < vertex_n; i++)
+        {
+            for (int j = 0; j < hyper_edges_n; j++)
+            {
+                std::cout << h_disconnected.hVertex->at(i)->at(j) << " ";
+            }
+            std::cout << std::endl;
+        }
+
+    }
+
 }
 
-TEST(UtilsTest, GetVertices)
+TEST(LabelPropagationNaiveCPort, GetVertices)
 {
     MT::MersenneTwist rng;
     rng.init_genrand(SEED);
@@ -238,7 +253,32 @@ TEST(UtilsTest, GetVertices)
     {
         EXPECT_TRUE(get_vertices(&h_connected, i)->size() >= 1);
         EXPECT_FALSE(get_vertices(&h_connected, i)->size() < 1);
-        EXPECT_TRUE(get_vertices(&h_disconnected, i)->size() >= 1);
-        EXPECT_FALSE(get_vertices(&h_disconnected, i)->size() < 1);
+        EXPECT_TRUE(get_vertices(&h_disconnected, i)->size() >= 0);// we cant say much here because there could be or not edges without vertices
     }
+}
+
+TEST(LabelPropagationNaiveCPort, GetConnectedComponent)
+{
+    MT::MersenneTwist rng;
+    rng.init_genrand(SEED);
+    // Create two Hypergraph
+    int vertex_n = 5;
+    int hyper_edges_n = 3;
+    HyperGraph h_connected(vertex_n, hyper_edges_n);
+
+    populate_hypergraph(rng, vertex_n, hyper_edges_n, h_connected, true);
+
+    std::vector<int> connected_comp;
+    std::vector<int> visited(h_connected.nVertex);
+
+    for(int i=0; i<vertex_n; i++){
+        get_connected_component(&h_connected, &visited, &connected_comp, i);
+        
+        // for(auto elem:connected_comp){
+        //     std::cout<<elem<<std::endl;
+        // }
+        // std::cout<<std::endl;
+        connected_comp.clear();
+    }
+        
 }

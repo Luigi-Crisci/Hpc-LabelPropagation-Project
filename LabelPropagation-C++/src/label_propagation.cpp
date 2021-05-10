@@ -190,6 +190,7 @@ bool is_hypergraph_connected(HyperGraph *h)
 
     get_connected_component(h, &visited, &connected_comp, 0);
 
+
     return connected_comp.size() == h->nVertex ? true : false;
 }
 
