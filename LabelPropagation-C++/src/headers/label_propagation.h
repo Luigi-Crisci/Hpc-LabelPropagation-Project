@@ -1,7 +1,7 @@
 #include <map>
 #include <set>
 #include <vector>
-#include "headers/mtrnd.h"
+#include "mtrnd.h"
 
 typedef std::vector<std::vector<int> *> *Int_Matrix;
 typedef struct CFLabelPropagationFinder
@@ -53,3 +53,22 @@ typedef struct find_communities_struct
 } find_communities_struct;
 
 find_communities_struct findCommunities(HyperGraph *h, CFLabelPropagationFinder parameters);
+
+void shuffle(std::vector<int> *array, MT::MersenneTwist rng);
+
+std::map<int, std::set<int> *> *reverse_map(std::map<int, int> *map);
+
+std::vector<int> *get_edges(HyperGraph *h, int vertices);
+
+std::vector<int> *get_vertices(HyperGraph *h, int edge);
+
+int get_vertices_number(HyperGraph *h, int edge);
+
+int compute_vertex_label(HyperGraph *h, int v, std::map<int, int> *vlabel, std::map<int, int> *heLables, MT::MersenneTwist rng);
+
+int compute_edge_label(HyperGraph *h, int e, std::map<int, int> *vlabel, std::map<int, int> *heLables, MT::MersenneTwist rng);
+
+void get_connected_component(HyperGraph *h, std::vector<int> *visited, std::vector<int> *connected_comp, int v);
+
+bool is_hypergraph_connected(HyperGraph *h);
+

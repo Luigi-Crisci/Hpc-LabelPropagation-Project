@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "label_propagation.h"
+#include "headers/label_propagation.h"
 
 // Demonstrate some basic assertions.
 TEST(HelloTest, BasicAssertions) {

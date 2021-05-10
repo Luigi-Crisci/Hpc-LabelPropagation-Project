@@ -161,8 +161,6 @@ int compute_edge_label(HyperGraph *h, int e, std::map<int, int> *vlabel, std::ma
     return *(max_edge_label_found->begin());
 }
 
-
-
 void get_connected_component(HyperGraph *h, std::vector<int> *visited, std::vector<int> *connected_comp, int v)
 {
     (*visited)[v] = 1;

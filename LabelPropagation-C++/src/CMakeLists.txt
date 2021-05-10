@@ -1,12 +1,12 @@
 add_library(label_propagation)
-include_directories(headers)
+
 
 target_sources(label_propagation
   PRIVATE
   label_propagation.cpp
   PUBLIC
-  label_propagation.h
-  mtrnd.h
+  headers/label_propagation.h
+  headers/mtrnd.h
 )
 target_link_libraries(label_propagation 
                     PRIVATE OpenMP::OpenMP_CXX)
