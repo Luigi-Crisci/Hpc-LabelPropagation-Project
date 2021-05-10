@@ -1,10 +1,10 @@
-#include <iostream>
 #include <ctime>
 #include <map>
 #include <iterator>
 #include <assert.h>
+#include <iostream>
+#include "headers/label_propagation.h"
 
-#include "label_propagation.h"
 
 // Defines values used by the algorithm according to the paper
 #define MAXITER 100

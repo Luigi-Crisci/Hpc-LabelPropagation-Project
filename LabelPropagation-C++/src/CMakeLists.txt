@@ -1,4 +1,5 @@
 add_library(label_propagation)
+include_directories(headers)
 
 target_sources(label_propagation
   PRIVATE

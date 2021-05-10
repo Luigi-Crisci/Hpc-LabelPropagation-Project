@@ -1,5 +1,7 @@
-#include <vector>
+#include <map>
 #include <set>
+#include <vector>
+#include "headers/mtrnd.h"
 
 typedef std::vector<std::vector<int> *> *Int_Matrix;
 typedef struct CFLabelPropagationFinder
@@ -49,3 +51,5 @@ typedef struct find_communities_struct
     }
 
 } find_communities_struct;
+
+find_communities_struct findCommunities(HyperGraph *h, CFLabelPropagationFinder parameters);
