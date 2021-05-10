@@ -3,8 +3,12 @@
 #include <map>
 #include <iterator>
 #include <assert.h>
-#include "headers/mtrnd.h"
-#include "headers/structs.h"
+
+#include "label_propagation.h"
+
+// Defines values used by the algorithm according to the paper
+#define MAXITER 100
+#define SEED time(NULL) // ¯\_(ツ)_/¯
 
 //Macros
 #define GETHYPEREDGES(h, v) std::cout << "h v=" << v << std::endl
