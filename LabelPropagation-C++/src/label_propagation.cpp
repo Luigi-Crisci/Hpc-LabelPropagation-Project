@@ -25,7 +25,7 @@ void shuffle(std::vector<int> *array, MT::MersenneTwist rng)
         for (i = 0; i < n - 1; i++)
         {   
             size_t j = i + GENRANDOM(rng) / (RAND_MAX / (n - i) +1);
-
+            
             int t = array->at(j);
             array->at(j) = array->at(i);
             array->at(i) = t;

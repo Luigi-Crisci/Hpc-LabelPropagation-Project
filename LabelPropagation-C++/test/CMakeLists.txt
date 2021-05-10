@@ -10,7 +10,7 @@ FetchContent_MakeAvailable(gtest)
 
 add_executable(
     unit_tests
-    example_test.cc
+    utils_test.cc
     )
 
 target_link_libraries(unit_tests
