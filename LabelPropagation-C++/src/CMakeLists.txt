@@ -1,12 +1,15 @@
-add_executable(label_propagation)
-
-target_link_libraries(label_propagation PRIVATE OpenMP::OpenMP_CXX)
+add_library(label_propagation)
 
 target_sources(label_propagation
+  PRIVATE
+  label_propagation.cpp
   PUBLIC
-	label_propagation.cpp
+  label_propagation.h
   mtrnd.h
 )
+target_link_libraries(label_propagation 
+                    PRIVATE OpenMP::OpenMP_CXX)
+
 
 target_include_directories(label_propagation
   PUBLIC
