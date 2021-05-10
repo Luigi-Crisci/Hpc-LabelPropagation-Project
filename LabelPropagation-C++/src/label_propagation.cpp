@@ -1,110 +1,63 @@
 #include <iostream>
 #include <ctime>
 #include <map>
-#include <set>
 #include <iterator>
-#include "mtrnd.h"
-#include <vector>
 #include <assert.h>
-
-// Defines values used by the algorithm according to the paper
-#define MAXITER 100
-#define SEED time(NULL) // ¯\_(ツ)_/¯
+#include "headers/mtrnd.h"
+#include "headers/structs.h"
 
 //Macros
 #define GETHYPEREDGES(h, v) std::cout << "h v=" << v << std::endl
 #define GENRANDOM(rng) static_cast<unsigned long>(rng.genrand_real1() * RAND_MAX)
 #define IS_EDGE_EMPTY(h, e) get_vertices_number(h, e) == 0 ? true : false
 
-typedef std::vector<std::vector<int> *> *Int_Matrix;
-typedef struct CFLabelPropagationFinder
-{
-    int max_iter;
-    int seed;
-} CFLabelPropagationFinder;
 
-/*
-    Hyper-graph structure
-*/
-typedef struct HyperGraph
+void shuffle(std::vector<int> *array, MT::MersenneTwist rng)
 {
-    int nVertex, nEdge;
-    Int_Matrix hVertex;
-
-    HyperGraph(int nVertex, int nEdge)
+    int n = array->size();
+    if (n > 1)
     {
-        this->nVertex = nVertex;
-        this->nEdge = nEdge;
-        hVertex = new std::vector<std::vector<int> *>(nVertex);
-        for (int i = 0; i < nVertex; i++)
-        {
-            (*hVertex)[i] = new std::vector<int>(nEdge);
+        size_t i;
+        for (i = 0; i < n - 1; i++)
+        {   
+            size_t j = i + GENRANDOM(rng) / (RAND_MAX / (n - i) +1);
+
+            int t = array->at(j);
+            array->at(j) = array->at(i);
+            array->at(i) = t;
         }
     }
 
-} HyperGraph;
+}
 
-typedef struct find_communities_struct
+/**
+ * @brief Get the sets from map object
+ * Extract how many Key are related to the same value, collapsing them into a set
+ * @return A map of type Value => [Key1,Key2,...]
+ */
+std::map<int, std::set<int> *> *reverse_map(std::map<int, int> *map)
 {
 
-    std::set<std::set<int> *> *np;
-    std::set<std::set<int> *> *hep;
-    std::vector<int> *vLabel;
-    std::vector<int> *heLabel;
-    int iter;
-
-    find_communities_struct(std::set<std::set<int> *> *_np, std::set<std::set<int> *> *_hep, std::vector<int> *_vLabel,
-                            std::vector<int> *_heLabel, int _iter)
+    std::map<int, std::set<int> *> *values_label_set = new std::map<int, std::set<int> *>;
+    for (auto it = map->begin(); it != map->end(); it++)
     {
-        np = _np;
-        hep = _hep;
-        vLabel = _vLabel;
-        heLabel = _heLabel;
-        iter = _iter;
-    }
 
-} find_communities_struct;
-
-void shuffle(std::vector<int> *array, MT::MersenneTwist rng);
-bool is_hypergraph_connected(HyperGraph *h);
-void get_connected_component(HyperGraph *h, std::vector<int> *visited, std::vector<int> *connected_comp, int v);
-int compute_edge_label(HyperGraph *h, int e, std::map<int, int> *vlabel, std::map<int, int> *heLables, MT::MersenneTwist rng);
-int compute_vertex_label(HyperGraph *h, int v, std::map<int, int> *vlabel, std::map<int, int> *heLables, MT::MersenneTwist rng);
-
-int main(int, char **)
-{
-
-    //initialize the Mersenne Twister.
-    MT::MersenneTwist rng;
-    rng.init_genrand(SEED);
-
-    //create hypergraph
-    HyperGraph h(10, 2);
-
-    for (int i = 0; i < h.nVertex; i++)
-    {
-        for (int j = 0; j < h.nEdge; j++)
+        int value = it->second;
+        int key = it->first;
+        if (values_label_set->count(value) == 1)
+            values_label_set->at(value)->insert(key); 
+        else
         {
-            if (rng.genrand_real1() <= 0.8)
-            {
-                (*h.hVertex)[i]->insert((*h.hVertex)[i]->begin() + j, 1);
-            }
+            std::set<int> *new_label_set = new std::set<int>;
+            new_label_set->insert(key);
+            values_label_set->insert({value, new_label_set});
         }
     }
 
-    for (int i = 0; i < h.nVertex; i++)
-    {
-        for (int j = 0; j < h.nEdge; j++)
-        {
-            std::cout << h.hVertex->at(i)->at(j) << " ";
-        }
-        std::cout << std::endl;
-    }
 
-    if (is_hypergraph_connected(&h))
-        std::cout << "Hypergraph connected!" << std::endl;
 
-    return 0;
+
+    return values_label_set;
 }
 
 std::vector<int> *get_edges(HyperGraph *h, int vertices)
@@ -132,121 +85,6 @@ int get_vertices_number(HyperGraph *h, int edge)
         if (h->hVertex->at(i)->at(edge) == 1)
             count++;
     return count;
-}
-
-bool is_edge_empty(HyperGraph *h, int edge)
-{
-    for (int i = 0; i < h->nVertex; i++)
-        if (h->hVertex->at(i)->at(edge) == 1)
-            return false;
-    return true;
-}
-
-find_communities_struct findCommunities(HyperGraph *h, CFLabelPropagationFinder parameters)
-{
-    assert(is_hypergraph_connected(h));
-
-    MT::MersenneTwist rng;
-    rng.init_genrand(parameters.seed);
-
-    std::map<int, int> *vLabel = new std::map<int, int>;
-    std::map<int, int> *heLabels = new std::map<int, int>;
-
-    std::vector<int> *vertices = new std::vector<int>;
-    std::vector<int> *edges = new std::vector<int>;
-
-    for (int i = 0; i < h->nVertex; i++)
-    {
-        vertices->push_back(i);
-        vLabel->insert({i, i});
-    }
-
-    for (int i = 0; i < h->nEdge; i++)
-        edges->push_back(i);
-
-    bool stop = false;
-    int current_iter = 0;
-
-    for (int current_iter = 0; !stop && current_iter < parameters.max_iter; current_iter++)
-    {
-        stop = true;
-        shuffle(edges, rng);
-
-        for (int i = 0; i < h->nEdge; i++)
-        {
-            int current_edge = edges->at(i);
-            if (IS_EDGE_EMPTY(h, current_edge))
-                continue;
-            heLabels->insert({current_edge, compute_edge_label(h, current_edge, vLabel, heLabels, rng)});
-        }
-
-        shuffle(vertices, rng);
-        for (int i = 0; i < h->nVertex; i++)
-        {
-            int current_vertex = vertices->at(i);
-            int new_label = compute_vertex_label(h, current_vertex, vLabel, heLabels, rng);
-            if (new_label != vLabel->at(current_vertex))
-                stop = false;
-            vLabel->insert({current_vertex, new_label});
-        }
-    }
-
-    //Get sets of Vertices lables
-    std::map<int, std::set<int> *> *vertices_label_set = reverse_map(vLabel);
-    //Get sets of Edges lables
-    std::map<int, std::set<int> *> *edges_label_set = reverse_map(heLabels);
-
-    //Collapse all vertives sets into a global set
-    std::set<std::set<int> *> *vertices_sets = new std::set<std::set<int> *>;
-    for (auto it = vertices_label_set->begin(); it != vertices_label_set->end(); it++)
-        vertices_sets->insert(it->second);
-
-    //Collapse all edges sets into a global set
-    std::set<std::set<int> *> *edges_set = new std::set<std::set<int> *>;
-    for (auto it = edges_label_set->begin(); it != edges_label_set->end(); it++)
-        edges_set->insert(it->second);
-
-    std::vector<int> *vertices_labels = new std::vector<int>;
-    std::vector<int> *edges_labels = new std::vector<int>;
-
-    //Collapse vertex labels into array
-    for (int i = 0; i < h->nVertex; i++)
-        vertices_labels->push_back((*vLabel)[i]);
-
-    //Collapse vertex labels into array
-    for (int i = 0; i < h->nEdge; i++)
-        if (is_edge_empty(h, i))
-            edges_labels->push_back(-1);
-        else
-            edges_labels->push_back((*heLabels)[i]);
-
-    //TODO: A LOTS OF FREE
-
-    return find_communities_struct(vertices_sets, edges_set, vertices_labels, edges_labels, current_iter);
-}
-
-/**
- * @brief Get the sets from map object
- * Extract how many Key are related to the same value, collapsing them into a set
- * @return A map of type Value => [Key1,Key2,...]
- */
-std::map<int, std::set<int> *> *reverse_map(std::map<int, int> *map)
-{
-    std::map<int, std::set<int> *> *values_label_set = new std::map<int, std::set<int> *>;
-    for (auto it = map->begin(); it != map->end(); it++)
-    {
-        int value = it->second;
-        int key = it->first;
-        if (map->count(value) == 1)
-            values_label_set->at(value)->insert(key);
-        else
-        {
-            std::set<int> *new_label_set = new std::set<int>;
-            new_label_set->insert(key);
-            values_label_set->insert({value, new_label_set});
-        }
-    }
-    return values_label_set;
 }
 
 int compute_vertex_label(HyperGraph *h, int v, std::map<int, int> *vlabel, std::map<int, int> *heLables, MT::MersenneTwist rng)
@@ -319,21 +157,7 @@ int compute_edge_label(HyperGraph *h, int e, std::map<int, int> *vlabel, std::ma
     return *(max_edge_label_found->begin());
 }
 
-void shuffle(std::vector<int> *array, MT::MersenneTwist rng)
-{
-    int n = array->size();
-    if (n > 1)
-    {
-        size_t i;
-        for (i = 0; i < n - 1; i++)
-        {
-            size_t j = i + GENRANDOM(rng) / (RAND_MAX / (n - i) + 1);
-            int t = array->at(j);
-            array[j] = array[i];
-            (*array)[i] = t;
-        }
-    }
-}
+
 
 void get_connected_component(HyperGraph *h, std::vector<int> *visited, std::vector<int> *connected_comp, int v)
 {
@@ -366,3 +190,95 @@ bool is_hypergraph_connected(HyperGraph *h)
 
     return connected_comp.size() == h->nVertex ? true : false;
 }
+
+// findCofind_communities START -------------------------------------------------------------------------------------
+
+find_communities_struct find_communities(HyperGraph *h, CFLabelPropagationFinder parameters)
+{
+    assert(is_hypergraph_connected(h));
+
+    MT::MersenneTwist rng;
+    rng.init_genrand(parameters.seed);
+
+    std::map<int, int> *vLabel = new std::map<int, int>;
+    std::map<int, int> *heLabels = new std::map<int, int>;
+
+    std::vector<int> *vertices = new std::vector<int>;
+    std::vector<int> *edges = new std::vector<int>;
+
+    for (int i = 0; i < h->nVertex; i++)
+    {
+        vertices->push_back(i);
+        vLabel->insert({i, i});
+    }
+
+    for (int i = 0; i < h->nEdge; i++)
+        edges->push_back(i);
+
+    bool stop = false;
+    int current_iter = 0;
+
+    
+
+    for (int current_iter = 0; !stop && current_iter < parameters.max_iter; current_iter++)
+    {
+        
+        stop = true;
+        shuffle(edges, rng);
+
+        for (int i = 0; i < h->nEdge; i++)
+        {
+            int current_edge = edges->at(i);
+            if (IS_EDGE_EMPTY(h, current_edge))
+                continue;
+            heLabels->insert({current_edge, compute_edge_label(h, current_edge, vLabel, heLabels, rng)});
+        }
+        shuffle(vertices, rng);
+        for (int i = 0; i < h->nVertex; i++)
+        {
+            int current_vertex = vertices->at(i);
+            int new_label = compute_vertex_label(h, current_vertex, vLabel, heLabels, rng);
+            if (new_label != vLabel->at(current_vertex))
+                stop = false;
+            vLabel->insert({current_vertex, new_label});
+        }
+
+
+    }
+    
+    
+    //Get sets of Vertices lables
+    std::map<int, std::set<int> *> *vertices_label_set = reverse_map(vLabel);
+    //Get sets of Edges lables
+    std::map<int, std::set<int> *> *edges_label_set = reverse_map(heLabels);
+    
+    //Collapse all vertives sets into a global set
+    std::set<std::set<int> *> *vertices_sets = new std::set<std::set<int> *>;
+    for (auto it = vertices_label_set->begin(); it != vertices_label_set->end(); it++)
+        vertices_sets->insert(it->second);
+
+    //Collapse all edges sets into a global set
+    std::set<std::set<int> *> *edges_set = new std::set<std::set<int> *>;
+    for (auto it = edges_label_set->begin(); it != edges_label_set->end(); it++)
+        edges_set->insert(it->second);
+
+    std::vector<int> *vertices_labels = new std::vector<int>;
+    std::vector<int> *edges_labels = new std::vector<int>;
+
+    
+    //Collapse vertex labels into array
+    for (int i = 0; i < h->nVertex; i++)
+        vertices_labels->push_back((*vLabel)[i]);
+
+    //Collapse vertex labels into array
+    for (int i = 0; i < h->nEdge; i++)
+        if (IS_EDGE_EMPTY(h, i))
+            edges_labels->push_back(-1);
+        else
+            edges_labels->push_back((*heLabels)[i]);
+
+    //TODO: A LOTS OF FREE
+
+    return find_communities_struct(vertices_sets, edges_set, vertices_labels, edges_labels, current_iter);
+}
+// find_communities END-------------------------------------------------------------------------------------- 
