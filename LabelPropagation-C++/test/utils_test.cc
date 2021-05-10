@@ -150,7 +150,7 @@ TEST(UtilsTest, FindCommunitiesTest)
 }
 
 TEST(UtilsTest, ShuffleTest)
-{
+{//pippo
     MT::MersenneTwist rng;
     rng.init_genrand(SEED);
 
