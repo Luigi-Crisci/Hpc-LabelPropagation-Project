@@ -1,5 +1,6 @@
 #include <map>
 #include <set>
+#include <unordered_set>
 #include <vector>
 #include "mtrnd.h"
 
@@ -34,13 +35,13 @@ typedef struct HyperGraph
 typedef struct find_communities_struct
 {
 
-    std::set<std::set<int> *> *np;
-    std::set<std::set<int> *> *hep;
+    std::unordered_set<std::unordered_set<int> *> *np;
+    std::unordered_set<std::unordered_set<int> *> *hep;
     std::vector<int> *vLabel;
     std::vector<int> *heLabel;
     int iter;
 
-    find_communities_struct(std::set<std::set<int> *> *_np, std::set<std::set<int> *> *_hep, std::vector<int> *_vLabel,
+    find_communities_struct(std::unordered_set<std::unordered_set<int> *> *_np, std::unordered_set<std::unordered_set<int> *> *_hep, std::vector<int> *_vLabel,
                             std::vector<int> *_heLabel, int _iter)
     {
         np = _np;
@@ -56,7 +57,7 @@ find_communities_struct findCommunities(HyperGraph *h, CFLabelPropagationFinder 
 
 void shuffle(std::vector<int> *array, MT::MersenneTwist rng);
 
-std::map<int, std::set<int> *> *reverse_map(std::map<int, int> *map);
+std::map<int, std::unordered_set<int> *> *reverse_map(std::map<int, int> *map);
 
 std::vector<int> *get_edges(HyperGraph *h, int vertices);
 
@@ -71,4 +72,6 @@ int compute_edge_label(HyperGraph *h, int e, std::map<int, int> *vlabel, std::ma
 void get_connected_component(HyperGraph *h, std::vector<int> *visited, std::vector<int> *connected_comp, int v);
 
 bool is_hypergraph_connected(HyperGraph *h);
+
+void free_hypergraph(HyperGraph* s);
 

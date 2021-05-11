@@ -8,6 +8,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(gtest)
 
+set(CMAKE_CXX_FLAGS "-g")
+
 add_executable(
     unit_tests
     utils_test.cc
