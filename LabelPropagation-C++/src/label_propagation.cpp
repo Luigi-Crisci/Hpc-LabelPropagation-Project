@@ -43,10 +43,10 @@ void shuffle(std::vector<int> *array, MT::MersenneTwist rng)
  * Extract how many Key are related to the same value, collapsing them into a set
  * @return A map of type Value => [Key1,Key2,...]
  */
-std::map<int, std::unordered_set<int> *> *reverse_map(std::map<int, int> *map)
+std::unordered_map<int, std::unordered_set<int> *> *reverse_map(std::unordered_map<int, int> *map)
 {
 
-    std::map<int, std::unordered_set<int> *> *values_label_set = new std::map<int, std::unordered_set<int> *>;
+    std::unordered_map<int, std::unordered_set<int> *> *values_label_set = new std::unordered_map<int, std::unordered_set<int> *>;
     for (auto it = map->begin(); it != map->end(); it++)
     {
 
@@ -95,12 +95,12 @@ int get_vertices_number(HyperGraph *h, int edge)
     return count;
 }
 
-int compute_vertex_label(HyperGraph *h, int v, std::map<int, int> *vlabel, std::map<int, int> *heLables, MT::MersenneTwist rng)
+int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vlabel, std::unordered_map<int, int> *heLables, MT::MersenneTwist rng)
 {
     std::vector<int> *edges = get_edges(h, v);
     if(edges->size() == 0)
         return -1;
-    std::map<int, int> *vertex_label_list = new std::map<int, int>;
+    std::unordered_map<int, int> *vertex_label_list = new std::unordered_map<int, int>;
 
     int max = 0;
     int current_label, current_edge;
@@ -114,7 +114,7 @@ int compute_vertex_label(HyperGraph *h, int v, std::map<int, int> *vlabel, std::
         current_label = heLables->at(current_edge);
 
         if (vertex_label_list->count(current_label) == 1)
-            vertex_label_list->insert({current_label, vertex_label_list->at(current_label) + 1});
+            (*vertex_label_list)[current_label] = vertex_label_list->at(current_label) + 1;
         else
             vertex_label_list->insert({current_label, 1});
 
@@ -134,12 +134,12 @@ int compute_vertex_label(HyperGraph *h, int v, std::map<int, int> *vlabel, std::
     return *(max_vertex_label_found->begin());
 }
 
-int compute_edge_label(HyperGraph *h, int e, std::map<int, int> *vlabel, std::map<int, int> *heLables, MT::MersenneTwist rng)
+int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabel, std::unordered_map<int, int> *heLables, MT::MersenneTwist rng)
 {
     std::vector<int> *vertices = get_vertices(h, e);
     if(vertices->size()==0)
         return -1;
-    std::map<int, int> *edge_label_list = new std::map<int, int>;
+    std::unordered_map<int, int> *edge_label_list = new std::unordered_map<int, int>;
     int max = 0, current_label, current_vertex;
     std::unordered_set<int> *max_edge_label_found = new std::unordered_set<int>;
     
@@ -151,11 +151,9 @@ int compute_edge_label(HyperGraph *h, int e, std::map<int, int> *vlabel, std::ma
         current_label = vlabel->at(current_vertex);
 
         if (edge_label_list->count(current_label) == 1)
-            edge_label_list->insert({current_label, edge_label_list->at(current_label) + 1});
+            (*edge_label_list)[current_label] = edge_label_list->at(current_label) + 1;
         else
             edge_label_list->insert({current_label, 1});
-
-
 
         if (edge_label_list->at(current_label) == max){
             max_edge_label_found->insert(current_label);
@@ -210,15 +208,15 @@ bool is_hypergraph_connected(HyperGraph *h)
 
 // findCofind_communities START -------------------------------------------------------------------------------------
 
-find_communities_struct find_communities(HyperGraph *h, CFLabelPropagationFinder parameters)
+find_communities_struct* find_communities(HyperGraph *h, CFLabelPropagationFinder parameters)
 {
     assert(is_hypergraph_connected(h));
 
     MT::MersenneTwist rng;
     rng.init_genrand(parameters.seed);
 
-    std::map<int, int> *vLabel = new std::map<int, int>;
-    std::map<int, int> *heLabels = new std::map<int, int>;
+    std::unordered_map<int, int> *vLabel = new std::unordered_map<int, int>;
+    std::unordered_map<int, int> *heLabels = new std::unordered_map<int, int>;
 
     std::vector<int> *vertices = new std::vector<int>;
     std::vector<int> *edges = new std::vector<int>;
@@ -232,23 +230,20 @@ find_communities_struct find_communities(HyperGraph *h, CFLabelPropagationFinder
     for (int i = 0; i < h->nEdge; i++)
         edges->push_back(i);
 
-    bool stop = false;
+    bool stop = true;
     int current_iter = 0;
 
-    
-
-    for (current_iter = 0; !stop && current_iter < parameters.max_iter; current_iter++)
+    for (current_iter = 0; stop && current_iter < parameters.max_iter; current_iter++)
     {
-        
         stop = true;
         shuffle(edges, rng);
 
         for (int i = 0; i < h->nEdge; i++)
         {
             int current_edge = edges->at(i);
-            if (IS_EDGE_EMPTY(h, current_edge))
+            if (get_vertices_number(h,current_edge) == 0)
                 continue;
-            heLabels->insert({current_edge, compute_edge_label(h, current_edge, vLabel, heLabels, rng)});
+            (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
         }
         shuffle(vertices, rng);
         for (int i = 0; i < h->nVertex; i++)
@@ -257,17 +252,17 @@ find_communities_struct find_communities(HyperGraph *h, CFLabelPropagationFinder
             int new_label = compute_vertex_label(h, current_vertex, vLabel, heLabels, rng);
             if (new_label != vLabel->at(current_vertex))
                 stop = false;
-            vLabel->insert({current_vertex, new_label});
+
+            (*vLabel)[current_vertex] = new_label;
         }
 
 
     }
     
-    
     //Get sets of Vertices lables
-    std::map<int, std::unordered_set<int> *> *vertices_label_set = reverse_map(vLabel);
+    std::unordered_map<int, std::unordered_set<int> *> *vertices_label_set = reverse_map(vLabel);
     //Get sets of Edges lables
-    std::map<int, std::unordered_set<int> *> *edges_label_set = reverse_map(heLabels);
+    std::unordered_map<int, std::unordered_set<int> *> *edges_label_set = reverse_map(heLabels);
     
     //Collapse all vertives sets into a global set
     std::unordered_set<std::unordered_set<int> *> *vertices_sets = new std::unordered_set<std::unordered_set<int> *>;
@@ -284,8 +279,10 @@ find_communities_struct find_communities(HyperGraph *h, CFLabelPropagationFinder
 
     
     //Collapse vertex labels into array
-    for (int i = 0; i < h->nVertex; i++)
-        vertices_labels->push_back((*vLabel)[i]);
+    for (int i = 0; i < h->nVertex; i++){
+
+        vertices_labels->push_back(vLabel->at(i));
+    }
 
     //Collapse vertex labels into array
     for (int i = 0; i < h->nEdge; i++)
@@ -294,8 +291,13 @@ find_communities_struct find_communities(HyperGraph *h, CFLabelPropagationFinder
         else
             edges_labels->push_back((*heLabels)[i]);
 
-    //TODO: A LOTS OF FREE
-    //TODO: non so che ci sta dentro -vertices_sets, edges_set-
-    return find_communities_struct(vertices_sets, edges_set, vertices_labels, edges_labels, current_iter);
+    free(vLabel);
+    free(heLabels);
+    free(vertices);
+    free(edges);
+    free(vertices_label_set);
+    free(edges_label_set);
+
+    return new find_communities_struct(vertices_sets, edges_set, vertices_labels, edges_labels, current_iter);
 }
 // find_communities END-------------------------------------------------------------------------------------- 

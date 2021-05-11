@@ -16,3 +16,6 @@ comms = findcommunities(h, cflp)
 
 @test comms.helabels == [4, 7, -1]
 
+########### Small size
+
+
