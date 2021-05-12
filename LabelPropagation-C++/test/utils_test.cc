@@ -143,6 +143,9 @@ TEST(NaiveCPort, ReverseMap)
     //all values equals
     map->clear();
     EXPECT_TRUE(create_and_reverse_map(map, 1));
+    
+    //TODO: JUST A TEST FOR THE GITHUB ACTIONS
+    EXPECT_TRUE(false);
 }
 
 TEST(NaiveCPort, ComputeEdgeLabel)
