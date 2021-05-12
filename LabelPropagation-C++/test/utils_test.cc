@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include "label_propagation.cpp"
+#include "headers/label_propagation.h"
+
 #define MAXITER 100
 #define SEED 1234
 #define VERTEX_N 1000    //100

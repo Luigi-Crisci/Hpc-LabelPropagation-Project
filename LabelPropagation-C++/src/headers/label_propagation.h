@@ -53,7 +53,7 @@ typedef struct find_communities_struct
 
 } find_communities_struct;
 
-find_communities_struct* findCommunities(HyperGraph *h, CFLabelPropagationFinder parameters);
+find_communities_struct* find_communities(HyperGraph *h, CFLabelPropagationFinder parameters);
 
 void shuffle(std::vector<int> *array, MT::MersenneTwist rng);
 
@@ -75,3 +75,4 @@ bool is_hypergraph_connected(HyperGraph *h);
 
 void free_hypergraph(HyperGraph* s);
 
+void print_find_communities_struct(find_communities_struct* res);

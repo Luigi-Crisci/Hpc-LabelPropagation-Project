@@ -230,10 +230,10 @@ find_communities_struct* find_communities(HyperGraph *h, CFLabelPropagationFinde
     for (int i = 0; i < h->nEdge; i++)
         edges->push_back(i);
 
-    bool stop = true;
-    int current_iter = 0;
+    bool stop = false;
+    int current_iter;
 
-    for (current_iter = 0; stop && current_iter < parameters.max_iter; current_iter++)
+    for (current_iter = 1; !stop && current_iter < parameters.max_iter; current_iter++)
     {
         stop = true;
         shuffle(edges, rng);
@@ -245,6 +245,8 @@ find_communities_struct* find_communities(HyperGraph *h, CFLabelPropagationFinde
                 continue;
             (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
         }
+
+
         shuffle(vertices, rng);
         for (int i = 0; i < h->nVertex; i++)
         {
