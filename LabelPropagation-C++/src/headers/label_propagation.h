@@ -8,6 +8,8 @@
 #include <iostream>
 #include <chrono>
 #include <utility>
+#include <fstream>
+#include <sstream>
 #include "random"
 
 #include "headers/mtrnd.h"

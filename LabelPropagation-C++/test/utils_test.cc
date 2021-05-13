@@ -55,6 +55,20 @@ void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n,
             }
         } while (is_hypergraph_connected(hyper_graph));
     }
+
+
+    std::ofstream myFile;
+    myFile.open("hyper_graph_test.txt");
+    std::stringstream ss;
+    for (int i = 0; i < vertex_n; i++)
+    {
+        for(int j=0; j<hyper_edges_n; j++){
+            ss<<hyper_graph->v2he[i]->count(j);
+        }
+    }
+
+    myFile<<ss.str();
+    myFile.close();
 }
 
 bool is_set_equal_to_vector(int *vec, std::set<int> *set, u_int size)

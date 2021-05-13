@@ -1,5 +1,5 @@
 #include <iostream>
-#include "src/headers/label_propagation.h"
+#include "headers/label_propagation.h"
 
 
 #define N_VERTEX 1000

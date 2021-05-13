@@ -1,4 +1,5 @@
 #include "headers/label_propagation.h"
+#include "headers/mtrnd.h"
 
 void shuffle(int *array, int size, MT::MersenneTwist rng)
 {
