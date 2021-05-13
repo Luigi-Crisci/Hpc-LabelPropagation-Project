@@ -2,6 +2,7 @@
 #include "random"
 #include "headers/label_propagation.h"
 #include <chrono>
+#include <utility>
 
 #define N_VERTEX 1000
 #define N_EDGES 100
@@ -25,12 +26,13 @@ void populate_hypergraph(int vertex_n, int hyper_edges_n, HyperGraph *hyper_grap
                     // std::cout<<"cp: "<<cp<<std::endl;                    
                     if (  cp <= p)
                     {
-                        (*(hyper_graph->hVertex->at(i)))[j] = 1;
+                        hyper_graph->v2he[i]->try_emplace(j,true);
+                        hyper_graph->he2v[j]->try_emplace(i,true);
                     }
                     else
                     {
-
-                        (*(hyper_graph->hVertex->at(i)))[j] = 0;
+                        hyper_graph->v2he[i]->erase(j);
+                        hyper_graph->he2v[j]->erase(i);
                     }
                 }
             }

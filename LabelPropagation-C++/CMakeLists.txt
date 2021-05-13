@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.13)
 project(lable_propagation_project LANGUAGES CXX)
 
 # set the C++ standard
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -18,9 +18,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
 add_subdirectory(src)
 
-enable_testing()
+# enable_testing()
 
-add_subdirectory(test)
+# add_subdirectory(test)
 
 add_executable(main
 				main.cpp)
