@@ -42,10 +42,10 @@ Random.seed!(1234);
 cflp = CFLabelPropagationFinder(100, 1234)
 
 
-nv = 1000
-ne = 100
+nv = 10000
+ne = 200
 full_connected_h = Hypergraph(nv, ne)
-p = 0.2
+p = 0.3
 c = 1
 
 while true

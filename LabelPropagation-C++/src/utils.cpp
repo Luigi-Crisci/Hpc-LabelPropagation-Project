@@ -1,4 +1,3 @@
-#include <iostream>
 #include "headers/label_propagation.h"
 
 void print_find_communities_struct(find_communities_struct* res){
@@ -38,13 +37,13 @@ void print_find_communities_struct(find_communities_struct* res){
 
 void free_hypergraph(HyperGraph* s){
     for(int i = 0; i < s->nVertex; i++)
-        free(s->v2he[i]);
+        delete(s->v2he[i]);
     for(int i = 0; i < s->nEdge; i++)
-        free(s->he2v[i]);
+        delete(s->he2v[i]);
 
-    free(s->v2he);
-    free(s->he2v);
-    free(s);
+    delete(s->v2he);
+    delete(s->he2v);
+    delete(s);
 }
 
 int* collapse_map(std::map<int,bool> *map){

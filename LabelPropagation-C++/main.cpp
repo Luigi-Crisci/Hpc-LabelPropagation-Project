@@ -1,8 +1,6 @@
 #include <iostream>
-#include "random"
-#include "headers/label_propagation.h"
-#include <chrono>
-#include <utility>
+#include "src/headers/label_propagation.h"
+
 
 #define N_VERTEX 1000
 #define N_EDGES 100

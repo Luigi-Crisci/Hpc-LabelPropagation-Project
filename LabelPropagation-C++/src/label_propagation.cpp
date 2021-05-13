@@ -1,15 +1,8 @@
-#include <ctime>
-#include <map>
-#include <iterator>
-#include <assert.h>
-#include <iostream>
 #include "headers/label_propagation.h"
-
-// Defines values used by the algorithm according to the paper
-#define MAXITER 100
 
 void shuffle(int *array, int size, MT::MersenneTwist rng)
 {
+    
     if (size > 1)
     {
         size_t i;
@@ -42,7 +35,7 @@ std::unordered_map<int, std::unordered_set<int> *> *reverse_map(std::unordered_m
             values_label_set->at(value)->insert(key);
         else
         {
-            std::unordered_set<int> *new_label_set = new std::unordered_set<int>;
+            std::unordered_set<int> *new_label_set = new std::unordered_set<int>; // this mem is not freed
             new_label_set->insert(key);
             values_label_set->insert({value, new_label_set});
         }
@@ -98,6 +91,8 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
         }
     }
 
+    delete(vertex_label_list);
+
     if (vlabel->count(v) && max_vertex_label_found->find(vlabel->at(v)) != max_vertex_label_found->end())
         return vlabel->at(v);
     return *(max_vertex_label_found->begin());
@@ -115,7 +110,7 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
 
     int max = 0, current_label, current_vertex;
     std::unordered_map<int, int> *edge_label_list = new std::unordered_map<int, int>;
-    std::unordered_set<int> *max_edge_label_found = new std::unordered_set<int>;
+    std::unordered_set<int> *max_edge_label_found = new std::unordered_set<int>; //this is not freed
 
     shuffle(vertices, vertices_size, rng);
     for (int i = 0; i < vertices_size; i++)
@@ -140,6 +135,8 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
             max_edge_label_found->insert(current_label);
         }
     }
+
+    delete(edge_label_list);
 
     if (heLables->count(e) && max_edge_label_found->find(heLables->at(e)) != max_edge_label_found->end())
         return heLables->at(e);
@@ -176,14 +173,12 @@ bool is_hypergraph_connected(HyperGraph *h)
     return connected_comp.size() == h->nVertex ? true : false;
 }
 
-// findCofind_communities START -------------------------------------------------------------------------------------
-
 find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinder parameters)
 {
     //TODO: Parallelize BFS
     assert(is_hypergraph_connected(h));
 
-    //TODO: Find a way to have a multicore random
+    // TODO: Find a way to have a multicore random > This is multithread
     MT::MersenneTwist rng;
     rng.init_genrand(parameters.seed);
 
@@ -262,13 +257,13 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
         else
             edges_labels[i]= heLabels->at(i);
 
-    free(vLabel);
-    free(heLabels);
+    delete(vLabel);
+    delete(heLabels);
     free(vertices);
     free(edges);
-    free(vertices_label_set);
-    free(edges_label_set);
+    delete(vertices_label_set);
+    delete(edges_label_set);
 
     return new find_communities_struct(vertices_sets, edges_set, vertices_labels,h->nVertex, edges_labels, h->nEdge, current_iter);
 }
-// find_communities END--------------------------------------------------------------------------------------
+

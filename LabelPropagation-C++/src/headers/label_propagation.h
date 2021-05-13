@@ -2,17 +2,22 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <vector>
-#include "mtrnd.h"
+#include <ctime>
+#include <iterator>
+#include <assert.h>
+#include <iostream>
+#include <chrono>
+#include <utility>
+#include "random"
+
+#include "headers/mtrnd.h"
 
 #define GENRANDOM(rng) static_cast<unsigned long>(rng.genrand_real1() * RAND_MAX)
 #define IS_EDGE_EMPTY(h, e) get_vertices_number(h, e) == 0 ? true : false
-
 #define IS_CONNECTED_TO_EDGE(h, v, e) h->v2he[v]->count(e) == 1 ? true : false
 #define IS_CONNECTED_TO_VERTEX(h, e, v) h->he2v[e]->count(v) == 1 ? true : false
 #define GET_EDGES(h, v) h->v2he[v]
 #define GET_VERTICES(h, e) h->he2v[e]
-
-
 
 typedef struct CFLabelPropagationFinder
 {
@@ -72,7 +77,6 @@ typedef struct find_communities_struct
 
 } find_communities_struct;
 
-
 find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinder parameters);
 
 void shuffle(int *array, int size, MT::MersenneTwist rng);
@@ -92,7 +96,5 @@ bool is_hypergraph_connected(HyperGraph *h);
 void free_hypergraph(HyperGraph *s);
 
 void print_find_communities_struct(find_communities_struct *res);
-
-void free_hypergraph(HyperGraph *s);
 
 int *collapse_map(std::map<int, bool> *map);
