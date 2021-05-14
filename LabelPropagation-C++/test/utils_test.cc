@@ -3,8 +3,8 @@
 
 #define MAXITER 100
 #define SEED 1234
-#define VERTEX_N 20   //100
-#define HYPER_EDGES_N 4 //20
+#define VERTEX_N 10000      //100
+#define HYPER_EDGES_N 200   //20
 
 void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n, HyperGraph *hyper_graph, bool connected, std::string m_name)
 {
@@ -60,6 +60,8 @@ void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n,
     std::ofstream myFile;
     if(connected)
         m_name = m_name + "_connected";
+    else
+        m_name = m_name + "_disconnected";
     std::string filename = "../resources/hyper_graph_test_"+m_name+".txt";
     myFile.open(filename);
     std::stringstream ss;
@@ -74,13 +76,13 @@ void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n,
         ss<<std::endl;
     }
     
-    for (int i = 0; i < hyper_edges_n; i++)
-    {
-        for(int j=0; j<vertex_n; j++){
-            ss<<hyper_graph->he2v[i]->count(j);
-        }
-        ss<<std::endl;
-    }
+    // for (int i = 0; i < hyper_edges_n; i++)
+    // {
+    //     for(int j=0; j<vertex_n; j++){
+    //         ss<<hyper_graph->he2v[i]->count(j);
+    //     }
+    //     ss<<std::endl;
+    // }
 
     myFile<<ss.str();
     myFile.close();
@@ -143,11 +145,11 @@ TEST(NaiveCPort, Shuffle)
         set->insert(i);
     }
 
-    std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+    // std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
     shuffle(array, VERTEX_N, rng);
 
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    std::cout<<"Shuffle time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 1000.0<<std::endl;
+    // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    // std::cout<<"Shuffle time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 1000.0<<std::endl;
 
     bool is_set_equals_to_vector = is_set_equal_to_vector(array, set, VERTEX_N);
     
