@@ -73,7 +73,6 @@ void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n,
         for(int j=0; j<hyper_edges_n; j++){
             ss<<hyper_graph->v2he[i]->count(j);
         }
-        ss<<std::endl;
     }
     
     // for (int i = 0; i < hyper_edges_n; i++)
