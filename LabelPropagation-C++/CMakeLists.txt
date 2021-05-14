@@ -22,13 +22,11 @@ enable_testing()
 
 add_subdirectory(test)
 
-add_executable(main
-				main.cpp)
+# add_executable(main
+#				main.cpp)
 
 add_executable(create_h
 					hyper_graph_gen.cpp)
 
-target_link_libraries(main PRIVATE label_propagation)
+# target_link_libraries(main PRIVATE label_propagation)
 target_link_libraries(create_h PRIVATE label_propagation)
-
-

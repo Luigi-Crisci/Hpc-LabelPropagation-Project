@@ -58,8 +58,12 @@ void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n,
 
 
     std::ofstream myFile;
-    myFile.open("hyper_graph_test.txt");
+    if(connected)
+        m_name = m_name + "_connected";
+    std::string filename = "hyper_graph_test_"+m_name+".txt";
+    myFile.open(filename);
     std::stringstream ss;
+    
     for (int i = 0; i < vertex_n; i++)
     {
         for(int j=0; j<hyper_edges_n; j++){
@@ -172,7 +176,7 @@ TEST(NaiveCPort, ComputeEdgeLabel)
     int hyper_edges_n = HYPER_EDGES_N;
 
     HyperGraph *h_connected = new HyperGraph(vertex_n, hyper_edges_n);
-    populate_hypergraph(rng, vertex_n, hyper_edges_n, h_connected, true);
+    populate_hypergraph(rng, vertex_n, hyper_edges_n, h_connected, true, "compute_edge_label");
 
     std::unordered_map<int, int> *vLabel = new std::unordered_map<int, int>();
     for (int i = 0; i < vertex_n; i++)
@@ -207,7 +211,7 @@ TEST(NaiveCPort, ComputeVertexLabel)
     int hyper_edges_n = HYPER_EDGES_N;
 
     HyperGraph *h_connected = new HyperGraph(vertex_n, hyper_edges_n);
-    populate_hypergraph(rng, vertex_n, hyper_edges_n, h_connected, true);
+    populate_hypergraph(rng, vertex_n, hyper_edges_n, h_connected, true, "compute_vertex_label");
 
     std::unordered_map<int, int> *vLabel = new std::unordered_map<int, int>();
     for (int i = 0; i < vertex_n; i++)
@@ -234,7 +238,7 @@ TEST(NaiveCPort, ComputeVertexLabel)
     delete(hLabel);
 }
 
-TEST(NaiveCPort, find_communities_test)
+TEST(NaiveCPort, FindCommunities)
 {
     MT::MersenneTwist rng;
     rng.init_genrand(SEED);
@@ -243,7 +247,7 @@ TEST(NaiveCPort, find_communities_test)
     int hyper_edges_n = HYPER_EDGES_N;
 
     HyperGraph *h_connected = new HyperGraph(vertex_n, hyper_edges_n);
-    populate_hypergraph(rng, vertex_n, hyper_edges_n, h_connected, true);
+    populate_hypergraph(rng, vertex_n, hyper_edges_n, h_connected, true, "find_communities");
     CFLabelPropagationFinder parameters;
     parameters.seed = SEED;
     parameters.max_iter = MAXITER;
