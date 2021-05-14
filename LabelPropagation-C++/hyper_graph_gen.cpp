@@ -7,7 +7,7 @@ void read_files(std::string sFilename);
 int main()
 {
     std::ofstream myFile;
-    myFile.open("hyper_graph_test.txt");
+    myFile.open("resources/hyper_graph_test.txt");
 
     float p = 0.3;
     u_int vertex_n = 5;

@@ -3,8 +3,8 @@
 
 #define MAXITER 100
 #define SEED 1234
-#define VERTEX_N 100    //100
-#define HYPER_EDGES_N 20 //20
+#define VERTEX_N 20   //100
+#define HYPER_EDGES_N 4 //20
 
 void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n, HyperGraph *hyper_graph, bool connected, std::string m_name)
 {
@@ -56,19 +56,30 @@ void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n,
         } while (is_hypergraph_connected(hyper_graph));
     }
 
-
+    
     std::ofstream myFile;
     if(connected)
         m_name = m_name + "_connected";
-    std::string filename = "hyper_graph_test_"+m_name+".txt";
+    std::string filename = "../resources/hyper_graph_test_"+m_name+".txt";
     myFile.open(filename);
     std::stringstream ss;
-    
+    ss<<VERTEX_N<<"\n";
+    ss<<HYPER_EDGES_N<<"\n";
+   
     for (int i = 0; i < vertex_n; i++)
     {
         for(int j=0; j<hyper_edges_n; j++){
             ss<<hyper_graph->v2he[i]->count(j);
         }
+        ss<<std::endl;
+    }
+    
+    for (int i = 0; i < hyper_edges_n; i++)
+    {
+        for(int j=0; j<vertex_n; j++){
+            ss<<hyper_graph->he2v[i]->count(j);
+        }
+        ss<<std::endl;
     }
 
     myFile<<ss.str();
