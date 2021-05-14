@@ -6,7 +6,7 @@
 #define VERTEX_N 100    //100
 #define HYPER_EDGES_N 20 //20
 
-void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n, HyperGraph *hyper_graph, bool connected)
+void populate_hypergraph(MT::MersenneTwist rng, int vertex_n, int hyper_edges_n, HyperGraph *hyper_graph, bool connected, std::string m_name)
 {
     float p = 0.3;
 
