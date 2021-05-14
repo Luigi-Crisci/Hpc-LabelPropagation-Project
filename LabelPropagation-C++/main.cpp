@@ -1,7 +1,6 @@
 #include <iostream>
 #include "headers/label_propagation.h"
 
-
 #define N_VERTEX 1000
 #define N_EDGES 100
 
