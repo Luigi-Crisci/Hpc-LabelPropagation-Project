@@ -1,71 +1,53 @@
-#include <fstream>
-#include <sstream>
 #include "headers/label_propagation.h"
 
-void read_files(std::string sFilename);
+#define MAXITER 100
+#define SEED 1234
+#define VERTEX_N 1000    //100
+#define HYPER_EDGES_N 80 //20
 
 int main()
 {
-    std::ofstream myFile;
-    myFile.open("resources/hyper_graph_test.txt");
+    MT::MersenneTwist rng;
+    rng.init_genrand(SEED);
 
+    HyperGraph *h = new HyperGraph(VERTEX_N,HYPER_EDGES_N);
     float p = 0.3;
-    u_int vertex_n = 5;
-    u_int hyper_edges_n = 3;
-
-    HyperGraph *hyper_graph = new HyperGraph(vertex_n, hyper_edges_n);
-
-	CFLabelPropagationFinder parameter;
-	parameter.max_iter = 100;
-	parameter.seed = 1234;
-
-    do{
-        for (int i = 0; i < vertex_n; i++)
+    do
+    {
+        for (int i = 0; i < VERTEX_N; i++)
         {
-            for (int j = 0; j < hyper_edges_n; j++)
+            for (int j = 0; j < HYPER_EDGES_N; j++)
             {
-                double cp = ((double) rand() / RAND_MAX);               
-                if (  cp <= p)
+                if (rng.genrand_real1() <= p)
                 {
-                    hyper_graph->v2he[i]->try_emplace(j,true);
-                    hyper_graph->he2v[j]->try_emplace(i,true);
+                    h->v2he[i]->try_emplace(j, true);
+                    h->he2v[j]->try_emplace(i, true);
                 }
                 else
                 {
-                    hyper_graph->v2he[i]->erase(j);
-                    hyper_graph->he2v[j]->erase(i);
+                    h->v2he[i]->erase(j);
+                    h->he2v[j]->erase(i);
                 }
             }
         }
-    }while (!is_hypergraph_connected(hyper_graph));
+    } while (!is_hypergraph_connected(h));
 
+    std::ofstream myFile;
+
+    std::string filename = "../resources/h_test_hypergraph_"+ std::to_string(VERTEX_N) + "_"+ std::to_string(HYPER_EDGES_N) + ".txt";
+    myFile.open(filename);
     std::stringstream ss;
-    for (int i = 0; i < vertex_n; i++)
+    ss << VERTEX_N << "\n";
+    ss << HYPER_EDGES_N << "\n";
+
+    for (int i = 0; i < VERTEX_N; i++)
     {
-        for(int j=0; j<hyper_edges_n; j++){
-            ss<<hyper_graph->v2he[i]->count(j);
+        for (int j = 0; j < HYPER_EDGES_N; j++)
+        {
+            ss << h->v2he[i]->count(j);
         }
     }
 
-    myFile<<ss.str();
+    myFile << ss.str();
     myFile.close();
-
-    read_files("hyper_graph_test.txt");
-}
-
-void read_files(std::string sFilename){
-
-    std::ifstream fileSource(sFilename);
-
-    if(!fileSource){
-        std::cout << "Cannot open  " << sFilename << std::endl;
-        exit(-1);
-    }
-    else{
-        std::string buffer;
-
-        while(fileSource>>buffer){
-            std::cout << buffer << std::endl;
-        }
-    }
 }

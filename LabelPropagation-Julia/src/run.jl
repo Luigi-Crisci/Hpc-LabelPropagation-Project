@@ -1,6 +1,7 @@
 using SimpleHypergraphs, Random
 
 include("find_communities.jl")
+include("read_hypergraph.jl")
 
 """
     _walk!(h::Hypergraph, s::AbstractVector{Int}, i::Int, visited::AbstractVector{Bool})
@@ -39,34 +40,11 @@ end
 ### Write code here
 Random.seed!(1234);
 
+h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_1000_80.txt")
+
 cflp = CFLabelPropagationFinder(100, 1234)
 
-
-nv = 10000
-ne = 200
-full_connected_h = Hypergraph(nv, ne)
-p = 0.3
-c = 1
-
-while true
-    global c
-    for i = 1:nv
-        for j = 1:ne
-            if rand() <= p
-                full_connected_h[i, j] = true
-            else
-                full_connected_h[i, j] = nothing
-            end
-        end
-    end
-	println("Iter: ",c)
-    c = c + 1
-	if length(our_get_connected_components(full_connected_h)) == 1
-		break
-	end
-end
-
-@time comms = our_findcommunities(full_connected_h, cflp)
+@time comms = our_findcommunities(h, cflp)
 
 # add_hyperedge!(h)
 # comms = findcommunities(h, cflp)
