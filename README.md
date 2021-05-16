@@ -6,13 +6,13 @@
 
 - [ ] Manage different code versions(release github or cmake);
 - [ ] First parallelisation with OpenMp(for) assai lazy;
-- [ ] Profiling funzioni capire accessi alla memoria(componente connessa);
-- [ ] Ottimizzazione strutture dati;
-- [ ] Chiedere al prof ottimizzazione successiva;
-- [ ] Produrre grafici;
-- [ ] Fare i test come sotto;
-- [ ] Fare presentazione;
-- [ ] Scrivere report come template del prof(main.tex).
+- [ ] Profile time spent in memory access(componente connessa);
+- [ ] Optimisation of data structures;
+- [ ] Other optimisation(ask);
+- [ ] Perform the tests;
+- [ ] Producing charts;
+- [ ] Making a presentation;
+- [ ] Writing the report(main.tex).
 
 ### Test size
 
