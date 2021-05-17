@@ -4,7 +4,7 @@
 
 ### To-do list
 
-- [ ] Manage different code versions(release github or cmake);
+- [x] Manage different code versions(release github or cmake);
 - [ ] First parallelisation with OpenMp(for) assai lazy;
 - [ ] Profile time spent in memory access(componente connessa);
 - [ ] Optimisation of data structures;
