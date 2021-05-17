@@ -2,8 +2,8 @@
 
 #define MAXITER 100
 #define SEED 1234
-#define VERTEX_N 1000    //100
-#define HYPER_EDGES_N 60 //20
+#define VERTEX_N 20000    //100
+#define HYPER_EDGES_N 1000 //20
 
 int main()
 {
