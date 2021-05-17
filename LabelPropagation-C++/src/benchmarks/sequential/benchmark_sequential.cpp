@@ -15,6 +15,7 @@ void populate_from_file(HyperGraph *hyper_graph, std::string file_name){
         exit(EXIT_FAILURE);
     }
 
+
     while(getline(file, str)){ }
 
     file.close();
@@ -45,7 +46,6 @@ int main(int argc, char *argv[]){
     parameters.max_iter = MAXITER;
 
     // SMALL SIZE BENCHMARK
-
     if(*argv[1] == 's'){
         std::cout<<"Starting benchmark_sequential on small size Hyper Graph"<<std::endl;
         HyperGraph *small_hypergraph = new HyperGraph(1000, 60);
@@ -56,7 +56,6 @@ int main(int argc, char *argv[]){
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         
         std::cout<<"Find Communities time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 1000.0<<std::endl;
-        
     }
 
     
@@ -72,8 +71,8 @@ int main(int argc, char *argv[]){
         
         std::cout<<"Find Communities time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 1000.0<<std::endl;
     }
-    // LARGE SIZE BENCHMARK
 
+    // LARGE SIZE BENCHMARK
     if(*argv[1] == 'l'){
         std::cout<<"Starting benchmark_sequential on large size Hyper Graph"<<std::endl;
         HyperGraph *large_hypergraph = new HyperGraph(20000, 1000);
