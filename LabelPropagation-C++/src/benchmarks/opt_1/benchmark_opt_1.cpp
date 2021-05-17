@@ -45,7 +45,6 @@ int main(int argc, char *argv[]){
     parameters.max_iter = MAXITER;
 
     // SMALL SIZE BENCHMARK
-
     if(*argv[1] == 's'){
         std::cout<<"Starting benchmark_opt_1 on small size Hyper Graph"<<std::endl;
         HyperGraph *small_hypergraph = new HyperGraph(1000, 60);
