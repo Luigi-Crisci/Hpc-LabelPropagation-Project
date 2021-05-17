@@ -75,8 +75,8 @@ int main(int argc, char *argv[]){
     // LARGE SIZE BENCHMARK
     if(*argv[1] == 'l'){
         std::cout<<"Starting benchmark_sequential on large size Hyper Graph"<<std::endl;
-        HyperGraph *large_hypergraph = new HyperGraph(50000, 3000);
-        populate_from_file(large_hypergraph, "../resources/h_test_hypergraph_50000_3000.txt");
+        HyperGraph *large_hypergraph = new HyperGraph(20000, 1000);
+        populate_from_file(large_hypergraph, "../resources/h_test_hypergraph_20000_1000.txt");
 
         std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         find_communities_struct *return_find_comm = find_communities(large_hypergraph, parameters);
