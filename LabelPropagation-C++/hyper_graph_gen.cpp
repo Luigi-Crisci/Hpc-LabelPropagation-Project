@@ -2,8 +2,8 @@
 
 #define MAXITER 100
 #define SEED 1234
-#define VERTEX_N 10000
-#define HYPER_EDGES_N 600 
+#define VERTEX_N 20000
+#define HYPER_EDGES_N 1000
 
 int main(int argc, char *argv[])
 {
