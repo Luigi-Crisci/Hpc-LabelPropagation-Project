@@ -1,13 +1,17 @@
 # Hpc-LabelPropagation-Project
 
 ## Test
-
 ### To-do list
 
 - [x] Manage different code versions(release github or cmake);
-- [ ] First parallelisation with OpenMp(for) assai lazy;
-- [ ] Profile time spent in memory access(componente connessa);
+- [x] Funciton profiling
 - [ ] Optimisation of data structures;
+  - [ ] BFS with bitset (get_connected_component)
+  - [ ] Compute Edge and Vertex Label with bitset
+- [ ] First parallelisation with OpenMp(for) assai lazy;
+- [ ] Specific parallel optimization
+  - [ ] Parallel BFS
+  - [ ] Array Padding (check if there is false sharing)
 - [ ] Other optimisation(ask);
 - [ ] Perform the tests;
 - [ ] Producing charts;
@@ -16,10 +20,9 @@
 
 ### Test size
 
-- Small: 1000 x 60
-- Medium: 5000 x 300
-- Big*: 20000 x 1000
-- Big: 50000 x 3000
+- Small: 5000 x 300
+- Medium: 10000 x 600
+- Big: 20000 x 1000
 
 ### Test overview
 
