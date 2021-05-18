@@ -17,20 +17,21 @@ void populate_from_file(HyperGraph *hyper_graph, std::string file_name){
 
 
     while(getline(file, str)){ }
-
+    int counter = 0;
     file.close();
+    #pragma omp parallel for
     for (int i = 0; i < hyper_graph->nVertex; i++)
         {
             for (int j = 0; j < hyper_graph->nEdge; j++)
             {
-                if (str[0] == '1')
+                if (str[counter] == '1')
                 {
                     hyper_graph->v2he[i]->emplace(j, true);
                     hyper_graph->he2v[j]->emplace(i, true);
                     str.erase(0, 1);
 
-                }else
-                    str.erase(0, 1);
+                }
+                counter++;
             }
         }
 
