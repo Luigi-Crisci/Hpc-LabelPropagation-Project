@@ -19,5 +19,3 @@ target_include_directories(label_propagation_opt2
   )
 
 set(CMAKE_CXX_FLAGS "-O3")
-
-
