@@ -51,8 +51,8 @@ int main(int argc, char *argv[]){
     // SMALL SIZE BENCHMARK
     if(*argv[1] == 's'){
         std::cout<<"Starting benchmark_opt_1 on small size Hyper Graph"<<std::endl;
-        HyperGraph *small_hypergraph = new HyperGraph(1000, 60);
-        populate_from_file(small_hypergraph, "../resources/h_test_hypergraph_1000_60.txt");
+        HyperGraph *small_hypergraph = new HyperGraph(5000, 300);
+        populate_from_file(small_hypergraph, "../resources/h_test_hypergraph_5000_300.txt");
         
         std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         find_communities_struct *return_find_comm = find_communities(small_hypergraph, parameters);
@@ -66,8 +66,8 @@ int main(int argc, char *argv[]){
     // MEDIUM SIZE BENCHMARK
     if(*argv[1] == 'm'){
         std::cout<<"Starting benchmark_opt_1 on medium size Hyper Graph"<<std::endl;
-        HyperGraph *medium_hypergraph = new HyperGraph(5000, 300);
-        populate_from_file(medium_hypergraph, "../resources/h_test_hypergraph_5000_300.txt");
+        HyperGraph *medium_hypergraph = new HyperGraph(10000, 600);
+        populate_from_file(medium_hypergraph, "../resources/h_test_hypergraph_10000_600.txt");
 
         std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         find_communities_struct *return_find_comm = find_communities(medium_hypergraph, parameters);
