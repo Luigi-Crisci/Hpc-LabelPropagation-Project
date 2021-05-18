@@ -6,7 +6,7 @@
 - [x] Manage different code versions(release github or cmake);
 - [x] Funciton profiling
 - [ ] Optimisation of data structures;
-  - [ ] BFS with bitset (get_connected_component)
+  - [x] BFS with bitset (get_connected_component) (**OPT 2**)
   - [ ] Compute Edge and Vertex Label with bitset
 - [ ] First parallelisation with OpenMp(for) assai lazy;
 - [ ] Specific parallel optimization
