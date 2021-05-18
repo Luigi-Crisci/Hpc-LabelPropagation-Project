@@ -10,7 +10,8 @@
 #include <utility>
 #include <fstream>
 #include <sstream>
-#include "random"
+#include <random>
+#include <bitset>
 
 #include "headers/mtrnd.h"
 
@@ -21,6 +22,7 @@
 #define GET_EDGES(h, v) h->v2he[v]
 #define GET_VERTICES(h, e) h->he2v[e]
 
+#define MAX_SIZE 100000
 typedef struct CFLabelPropagationFinder
 {
     int max_iter;
@@ -33,19 +35,20 @@ typedef struct CFLabelPropagationFinder
 typedef struct HyperGraph
 {
     int nVertex, nEdge;
-    std::map<int, bool> **v2he, **he2v;
+    std::bitset<MAX_SIZE> *v2he, *he2v;
 
-    HyperGraph(int nVertex, int nEdge)
+    HyperGraph(size_t nVertex, size_t nEdge)
     {
         this->nVertex = nVertex;
         this->nEdge = nEdge;
-        v2he = (std::map<int, bool> **)calloc(nVertex, sizeof(std::map<int, bool> *));
-        he2v = (std::map<int, bool> **)calloc(nEdge, sizeof(std::map<int, bool> *));
+        v2he = (std::bitset<MAX_SIZE> *)calloc(nVertex, sizeof(std::bitset<MAX_SIZE>));
+        he2v = (std::bitset<MAX_SIZE> *)calloc(nEdge, sizeof(std::bitset<MAX_SIZE>));
 
-        for (int i = 0; i < nVertex; i++)
-            v2he[i] = new std::map<int, bool>;
-        for (int i = 0; i < nEdge; i++)
-            he2v[i] = new std::map<int, bool>;
+        //TODO: Should this be pointers?
+        // for (int i = 0; i < nVertex; i++)
+        //     (*v2he)[i] = new std::bitset<nEdge>();
+        // for (int i = 0; i < nEdge; i++)
+        //     he2v[i] = new std::map<int, bool>;
     }
 
 } HyperGraph;
