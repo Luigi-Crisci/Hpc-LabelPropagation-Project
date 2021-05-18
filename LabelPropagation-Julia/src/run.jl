@@ -40,7 +40,7 @@ end
 ### Write code here
 Random.seed!(1234);
 
-h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_1000_80.txt")
+h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_5000_300.txt")
 
 cflp = CFLabelPropagationFinder(100, 1234)
 

@@ -9,15 +9,15 @@ function read_hypergraph(file::String)
     h = Hypergraph(n_vertex, n_edge)
 	
 	vertex_connected = AbstractVector{UInt8}([])
-	v = 1
 	while !eof(io)
-		readbytes!(io,vertex_connected,n_edge)
-		for i in 1:n_edge
-			if vertex_connected[i] == 0x31
-				h[v,i] = true
+		readbytes!(io,vertex_connected,n_vertex * n_edge)
+		for i in 1:n_vertex
+			for j in 1:n_edge
+				if vertex_connected[i+j] == 0x31
+					h[i,j] = true
+				end
 			end
 		end
-		v = v + 1
 	end
 	
 	close(io)
