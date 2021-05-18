@@ -21,11 +21,7 @@ void populate_from_file(HyperGraph *hyper_graph, std::string file_name){
     file.close();
 
     int counter = 0;
-
-    // std::cout<<omp_get_max_threads()<<std::endl;
     // #pragma omp parallel for 
-
-
     for (int i = 0; i < hyper_graph->nVertex; i++)
         {
             for (int j = 0; j < hyper_graph->nEdge; j++)
