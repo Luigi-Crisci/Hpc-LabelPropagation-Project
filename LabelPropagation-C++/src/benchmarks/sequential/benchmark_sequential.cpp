@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
         HyperGraph *medium_hypergraph = new HyperGraph(5000, 300);
         populate_from_file(medium_hypergraph, "../resources/h_test_hypergraph_5000_300.txt");
 
-        std::cout<<"File read. Computing..."<<std::endl;
+        // std::cout<<"File read. Computing..."<<std::endl;
         std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         find_communities_struct *return_find_comm = find_communities(medium_hypergraph, parameters);
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
