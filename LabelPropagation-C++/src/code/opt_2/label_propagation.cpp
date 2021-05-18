@@ -1,5 +1,7 @@
 #include "headers/label_propagation.h"
 #include "headers/mtrnd.h"
+#include "utils.cpp"
+#include <queue>
 
 void shuffle(std::bitset<MAX_SIZE> *bit_set, int size, MT::MersenneTwist rng)
 {
@@ -153,34 +155,38 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     return *(max_edge_label_found->begin());
 }
 
-void get_connected_component(HyperGraph *h, std::vector<int> *visited, std::vector<int> *connected_comp, int v)
-{
-    (*visited)[v] = 1;
-    connected_comp->push_back(v);
 
-    for (int e = 0; e < h->nEdge; e++)
-    {
-        if (IS_CONNECTED_TO_EDGE(h, v, e))
-        {
-            for (int j = 0; j < h->nVertex; j++)
-            {
-                if ((*visited)[j] == 1)
-                    continue;
-                if (IS_CONNECTED_TO_VERTEX(h, e, j))
-                    get_connected_component(h, visited, connected_comp, j);
+int bfs(HyperGraph *h, int e)
+{
+    bool** graph = hypergraph_to_graph(h);
+    size_t graph_size = h->nEdge;
+
+    std::queue<int> frontier;
+    std::vector<bool> checked(graph_size,false);
+    frontier.push(e);
+    
+    int current = -1,count = 0;
+    while(!frontier.empty()){
+        current = frontier.front();
+        frontier.pop();
+
+        for (int i = 0; i < graph_size; i++)
+        {  
+            bool connected = graph[current][i];
+            bool c = !checked[i];
+            if(graph[current][i] && !checked[i]){
+                checked[i] = true;
+                frontier.push(i);
+                count++;
             }
         }
     }
+    return count;
 }
 
 bool is_hypergraph_connected(HyperGraph *h)
 {
-    std::vector<int> visited(h->nVertex);
-    std::vector<int> connected_comp;
-
-    get_connected_component(h, &visited, &connected_comp, 0);
-
-    return connected_comp.size() == h->nVertex ? true : false;
+    return bfs(h,0) == h->nEdge;
 }
 
 find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinder parameters)
