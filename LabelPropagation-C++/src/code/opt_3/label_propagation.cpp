@@ -307,42 +307,42 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     int *vertices_labels = (int *)calloc(num_vertex, sizeof(int));
     int *edges_labels = (int *)calloc(num_edge, sizeof(int));
 
-    //TODO:make this parallel
+    //TODO:make this parallel ?? inserts
     for (auto it = vertices_label_set->begin(); it != vertices_label_set->end(); it++)
         vertices_sets->insert(it->second);
 
-    //TODO:make this parallel
+    //TODO:make this parallel ?? inserts
     for (auto it = edges_label_set->begin(); it != edges_label_set->end(); it++)
         edges_set->insert(it->second);
 
     
     
-    //TODO questa regione parallela è più efficiente farla in single thread
-#pragma omp parallel
-{
+    
+// #pragma omp parallel
+// {
 
-    #pragma omp for nowait firstprivate(num_vertex)
+//     #pragma omp for nowait firstprivate(num_vertex)
+//     for (int i = 0; i < num_vertex; i++)
+//         vertices_labels[i] = vLabel->at(i);
+
+//     #pragma omp for nowait firstprivate(num_edge)
+//     for (int i = 0; i < num_edge; i++)
+//         if (IS_EDGE_EMPTY(h, i))
+//             edges_labels[i] = -1;
+//         else
+//             edges_labels[i] = heLabels->at(i);
+// }
+
+    //TODO questa regione ha inserimenti
     for (int i = 0; i < num_vertex; i++)
         vertices_labels[i] = vLabel->at(i);
 
-    #pragma omp for nowait firstprivate(num_edge)
+    
     for (int i = 0; i < num_edge; i++)
         if (IS_EDGE_EMPTY(h, i))
             edges_labels[i] = -1;
         else
             edges_labels[i] = heLabels->at(i);
-}
-
-
-    // for (int i = 0; i < num_vertex; i++)
-    //     vertices_labels[i] = vLabel->at(i);
-
-    
-    // for (int i = 0; i < num_edge; i++)
-    //     if (IS_EDGE_EMPTY(h, i))
-    //         edges_labels[i] = -1;
-    //     else
-    //         edges_labels[i] = heLabels->at(i);
     
 
 //Collapse vertex labels into array
