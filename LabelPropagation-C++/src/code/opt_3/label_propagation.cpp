@@ -66,6 +66,7 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
     for (int i = 0; i < edges_size; i++)
     {
         current_edge = edges[i];
+        // std::cout<<"Inside: "<<current_edge<<" - "<<heLables->size()<<std::endl;
         current_label = heLables->at(current_edge);
 
         if (vertex_label_list->count(current_label) == 1)
@@ -203,8 +204,10 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
         vLabel->insert({i, i});
     }
 
-    for (int i = 0; i < h->nEdge; i++)
+    for (int i = 0; i < h->nEdge; i++){
+        heLabels->insert({i,-1});
         edges[i] = i;
+    }
 
     bool stop = false;
     int current_iter;
@@ -245,13 +248,11 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
         shuffle(vertices, num_vertex, rng);
 
-// #pragma omp parallel for private(new_label, current_vertex)
+#pragma omp parallel for private(new_label, current_vertex)
         for (int i = 0; i < num_vertex; i++)
         {
             current_vertex = vertices[i];
-            std::cout<<"1 - "<<current_vertex<<" - "<<vLabel->size()<<std::endl;
             new_label = compute_vertex_label(h, current_vertex, vLabel, heLabels, rng);
-            std::cout<<"2 - "<<current_vertex<<" - "<<vLabel->size()<<std::endl;
             if (new_label != vLabel->at(current_vertex))
                 stop = false;
 
