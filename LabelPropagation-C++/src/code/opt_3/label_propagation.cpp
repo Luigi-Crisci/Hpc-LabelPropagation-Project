@@ -294,6 +294,7 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     start = std::chrono::steady_clock::now();
 #endif // DEBUG
 
+    //TODO: reverse map parallel???
     //Get sets of Vertices lables
     std::unordered_map<int, std::unordered_set<int> *> *vertices_label_set = reverse_map(vLabel);
     //Get sets of Edges lables
@@ -301,32 +302,52 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
     //Collapse all vertives sets into a global set
     std::unordered_set<std::unordered_set<int> *> *vertices_sets = new std::unordered_set<std::unordered_set<int> *>(vertices_label_set->size());
+    std::unordered_set<std::unordered_set<int> *> *edges_set = new std::unordered_set<std::unordered_set<int> *>(edges_label_set->size());
+
+    int *vertices_labels = (int *)calloc(num_vertex, sizeof(int));
+    int *edges_labels = (int *)calloc(num_edge, sizeof(int));
+
+    //TODO:make this parallel
     for (auto it = vertices_label_set->begin(); it != vertices_label_set->end(); it++)
         vertices_sets->insert(it->second);
 
-    //Collapse all edges sets into a global set
-    std::unordered_set<std::unordered_set<int> *> *edges_set = new std::unordered_set<std::unordered_set<int> *>(edges_label_set->size());
-// #pragma omp parallel for 
+    //TODO:make this parallel
     for (auto it = edges_label_set->begin(); it != edges_label_set->end(); it++)
         edges_set->insert(it->second);
 
-    int *vertices_labels = (int *)calloc(h->nVertex, sizeof(int));
-    int *edges_labels = (int *)calloc(h->nEdge, sizeof(int));
+    
+    
+    //TODO questa regione parallela è più efficiente farla in single thread
+#pragma omp parallel
+{
 
-//Collapse vertex labels into array
-// #pragma omp parallel for 
+    #pragma omp for nowait firstprivate(num_vertex)
     for (int i = 0; i < num_vertex; i++)
         vertices_labels[i] = vLabel->at(i);
 
-//Collapse vertex labels into array
-// #pragma omp parallel for 
+    #pragma omp for nowait firstprivate(num_edge)
     for (int i = 0; i < num_edge; i++)
         if (IS_EDGE_EMPTY(h, i))
             edges_labels[i] = -1;
         else
             edges_labels[i] = heLabels->at(i);
+}
 
-    #pragma omp barrier
+
+    // for (int i = 0; i < num_vertex; i++)
+    //     vertices_labels[i] = vLabel->at(i);
+
+    
+    // for (int i = 0; i < num_edge; i++)
+    //     if (IS_EDGE_EMPTY(h, i))
+    //         edges_labels[i] = -1;
+    //     else
+    //         edges_labels[i] = heLabels->at(i);
+    
+
+//Collapse vertex labels into array
+
+#pragma omp barrier
     
     delete (vLabel);
     delete (heLabels);
