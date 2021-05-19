@@ -1,8 +1,8 @@
 #include "headers/label_propagation.h"
 #define MAXITER 100
 #define SEED 1234
-#define VERTEX_N 5000
-#define HYPER_EDGES_N 300
+#define VERTEX_N 10000
+#define HYPER_EDGES_N 600
 
 /*
     Size:
