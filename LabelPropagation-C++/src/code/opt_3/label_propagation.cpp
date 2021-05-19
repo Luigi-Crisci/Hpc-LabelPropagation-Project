@@ -47,6 +47,7 @@ std::unordered_map<int, std::unordered_set<int> *> *reverse_map(std::unordered_m
 
 int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vlabel, std::unordered_map<int, int> *heLables, MT::MersenneTwist rng)
 {
+    //std::cout<<"start"<<std::endl;
     std::bitset<MAX_SIZE> *edges_bitset = GET_EDGES(h, v);
 
     int edges_size = edges_bitset->count();
@@ -63,19 +64,31 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
     std::unordered_set<int> *max_vertex_label_found = new std::unordered_set<int>;
 
     shuffle(edges, edges_size, rng);
+
+
+    
     for (int i = 0; i < edges_size; i++)
     {
         current_edge = edges[i];
-        current_label = heLables->at(current_edge);
-
+        //TODO: Criminale
+        try{
+            current_label = heLables->at(current_edge);
+        }catch(const std::out_of_range& oor){
+            std::cout<<"current_label = heLables->at(current_edge);"<<std::endl;
+        }
+        
         if (vertex_label_list->count(current_label) == 1)
             (*vertex_label_list)[current_label] = vertex_label_list->at(current_label) + 1;
         else
             vertex_label_list->insert({current_label, 1});
-
-        if (vertex_label_list->at(current_label) == max)
-            max_vertex_label_found->insert(current_label);
-
+        
+        try{
+            if (vertex_label_list->at(current_label) == max)
+                max_vertex_label_found->insert(current_label);
+        }catch(const std::out_of_range& oor){
+            std::cout<<"vertex_label_list->at(current_label) == max"<<std::endl;
+        }
+        
         if (vertex_label_list->at(current_label) > max)
         {
             max = vertex_label_list->at(current_label);
@@ -84,7 +97,10 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
         }
     }
 
+    
+
     delete (vertex_label_list);
+    //std::cout<<"end"<<std::endl;
 
     if (vlabel->count(v) && max_vertex_label_found->find(vlabel->at(v)) != max_vertex_label_found->end())
         return vlabel->at(v);
@@ -249,9 +265,9 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
         for (int i = 0; i < num_vertex; i++)
         {
             current_vertex = vertices[i];
-            std::cout<<"1 - "<<current_vertex<<" - "<<vLabel->size()<<std::endl;
+            //std::cout<<"1 - "<<current_vertex<<" - "<<vLabel->size()<<std::endl;
             new_label = compute_vertex_label(h, current_vertex, vLabel, heLabels, rng);
-            std::cout<<"2 - "<<current_vertex<<" - "<<vLabel->size()<<std::endl;
+            //std::cout<<"2 - "<<current_vertex<<" - "<<vLabel->size()<<std::endl;
             if (new_label != vLabel->at(current_vertex))
                 stop = false;
 
