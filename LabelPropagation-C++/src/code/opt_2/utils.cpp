@@ -48,12 +48,13 @@ void free_hypergraph(HyperGraph *s)
     delete (s);
 }
 
-int *collapse_map(std::map<int, bool> *map)
+int *get_vertices_indices(std::bitset<MAX_SIZE> *b)
 {
-    int *vector = (int *)calloc(map->size(), sizeof(int));
-    int i = 0;
-    for (auto k : *map)
-        vector[i] = k.first;
+    int size = b->count();
+    int *vector = (int *)calloc(size, sizeof(int));
+    for (int i = 0,j=0; i < size; i++)
+        if(b->test(i))
+            vector[j++] = i;
     return vector;
 }
 
@@ -62,10 +63,10 @@ bool **hypergraph_to_graph(HyperGraph *h)
 {
     size_t ne = h->nEdge;
 
-    bool** matrix =(bool**) calloc(ne,sizeof(bool*));
+    bool **matrix = (bool **)calloc(ne, sizeof(bool *));
     for (size_t i = 0; i < ne; i++)
-        matrix[i] = (bool*) calloc(ne,sizeof(bool));
-    
+        matrix[i] = (bool *)calloc(ne, sizeof(bool));
+
     std::bitset<MAX_SIZE> *b1, *b2;
     for (int i = 0; i < ne; i++)
     {
