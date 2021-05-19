@@ -18,11 +18,27 @@
 
 int main(int argc, char *argv[])
 {
+    if (argc < 3)
+    {
+        std::cout << "Missing some arguments!!"<< std::endl;
+        std::cout << "Usage: \n\tbin/create_h VERTEX_N HYPER_EDGES_N p" << std::endl;
+        exit(0);
+    }
+
+    int VERTEX_N = std::stoi(argv[1]);
+    int HYPER_EDGES_N = std::stoi(argv[2]);
+    float p = std::stof(argv[3]);
+
+
     MT::MersenneTwist rng;
     rng.init_genrand(SEED);
 
     HyperGraph *h = new HyperGraph(VERTEX_N,HYPER_EDGES_N);
+<<<<<<< HEAD
     float p = 0.7;
+=======
+    // //float p = 0.3;
+>>>>>>> f90566759e11e1f2924ad39552bc70b0fc6e35f9
     do
     {
         for (int i = 0; i < VERTEX_N; i++)
