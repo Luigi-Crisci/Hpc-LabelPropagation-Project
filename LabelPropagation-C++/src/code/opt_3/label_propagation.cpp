@@ -75,6 +75,15 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
             current_label = heLables->at(current_edge);
         }catch(const std::out_of_range& oor){
             std::cout<<"current_label = heLables->at(current_edge);"<<std::endl;
+            std::cout<<"heLables->size() = "<<heLables->size()<<std::endl;
+            std::cout<<"current_edge = "<<current_edge<<std::endl;
+
+            std::cout<<"heLables"<<std::endl;
+            for(auto el:*heLables){
+                std::cout<<"    first "<<el.first<<" second "<<el.second<<std::endl;
+            }
+
+            exit(EXIT_FAILURE);
         }
         
         if (vertex_label_list->count(current_label) == 1)
