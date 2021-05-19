@@ -3,7 +3,7 @@
 #include "utils.cpp"
 #include <queue>
 
-void shuffle(int *vet, int size, MT::MersenneTwist rng)
+void shuffle(int *element, int size, MT::MersenneTwist rng)
 {
     if (size > 1)
     {
@@ -11,9 +11,10 @@ void shuffle(int *vet, int size, MT::MersenneTwist rng)
         for (i = 0; i < size - 1; i++)
         {
             size_t j = i + GENRANDOM(rng) / (RAND_MAX / (size - i) + 1);
-            int temp = vet[j];
-            vet[j] = vet[i];
-            vet[i] = temp;
+            
+            int temp = element[j];
+            element[j] = element[i];
+            element[i] = temp;
         }
     }
 }
@@ -47,13 +48,23 @@ std::unordered_map<int, std::unordered_set<int> *> *reverse_map(std::unordered_m
 
 int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vlabel, std::unordered_map<int, int> *heLables, MT::MersenneTwist rng)
 {
-    std::map<int, bool> *edges_map = GET_EDGES(h, v);
-    int edges_size = edges_map->size();
+    //std::map<int, bool> *edges_map = GET_EDGES(h, v);
+
+    std::bitset<MAX_SIZE> *edges_bitset = GET_EDGES(h, v);
+    
+    int edges_size = edges_bitset->count();
 
     if (edges_size == 0)
         return -1;
 
-    int *edges = collapse_map(edges_map);
+
+    // int edges_size = edges_map->size();
+
+    // if (edges_size == 0)
+    //     return -1;
+
+    // int *edges = collapse_map(edges_map);
+    int *edges = get_vertices_indices(edges_bitset);
     std::unordered_map<int, int> *vertex_label_list = new std::unordered_map<int, int>;
 
     int max = 0;
@@ -93,8 +104,8 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
 int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabel, std::unordered_map<int, int> *heLables, MT::MersenneTwist rng)
 {
 
-    //TODO work in progress dio
-    // //std::map<int, bool> *vertices_map = GET_VERTICES(h, e);
+    //TODO work in progress diolol
+    //std::map<int, bool> *vertices_map = GET_VERTICES(h, e);
     
     std::bitset<MAX_SIZE> *vertices_bitset = GET_VERTICES(h, e);
 
@@ -103,21 +114,20 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     if (vertices_size == 0)
         return -1;
 
-    int *vertices = get_vertices_indices(vertices_bitset)
+    // int *vertices = collapse_map(vertices_map);
+    int *vertices = get_vertices_indices(vertices_bitset);
 
-    int max = 0, current_label, current_vertex;
-    int current_index;
+    int max = 0, current_label, current_vertex, current_index;
 
     std::unordered_map<int, int> *edge_label_list = new std::unordered_map<int, int>;
     std::unordered_set<int> *max_edge_label_found = new std::unordered_set<int>; //this is not freed
 
-    shuffle(&vertices_bitset, vertices_size, rng);
+    shuffle(vertices, vertices_size, rng);
 
-    // TODO
     for (int i = 0; i < vertices_size; i++)
     {
         current_index; 
-        current_vertex = vertices_bitset[i];
+        current_vertex = vertices[i];
         current_label = vlabel->at(current_vertex);
 
         if (edge_label_list->count(current_label) == 1)

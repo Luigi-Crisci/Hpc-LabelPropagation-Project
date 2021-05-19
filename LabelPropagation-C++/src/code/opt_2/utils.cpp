@@ -36,17 +36,17 @@ void print_find_communities_struct(find_communities_struct *res)
     }
 }
 
-void free_hypergraph(HyperGraph *s)
-{
-    for (int i = 0; i < s->nVertex; i++)
-        delete (s->v2he[i]);
-    for (int i = 0; i < s->nEdge; i++)
-        delete (s->he2v[i]);
+// // void free_hypergraph(HyperGraph *s)
+// // {
+// //     for (int i = 0; i < s->nVertex; i++)
+// //         free(s->v2he[i]);
+// //     for (int i = 0; i < s->nEdge; i++)
+// //         free (s.he2v[i]);
 
-    delete (s->v2he);
-    delete (s->he2v);
-    delete (s);
-}
+// //     free (s->v2he);
+// //     free (s->he2v);
+// //     free (s);
+// // }
 
 int *get_vertices_indices(std::bitset<MAX_SIZE> *b)
 {
