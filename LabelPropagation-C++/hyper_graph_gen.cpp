@@ -1,9 +1,20 @@
 #include "headers/label_propagation.h"
-
 #define MAXITER 100
 #define SEED 1234
-#define VERTEX_N 20000
-#define HYPER_EDGES_N 1000
+#define VERTEX_N 5000
+#define HYPER_EDGES_N 300
+
+/*
+    Size:
+        small 5000 300
+        medium 10000 600
+        large 20000 1000
+
+    Density:
+      sparse 0.3
+      normal 0.5
+      dense  0.7
+*/
 
 int main(int argc, char *argv[])
 {
@@ -11,7 +22,7 @@ int main(int argc, char *argv[])
     rng.init_genrand(SEED);
 
     HyperGraph *h = new HyperGraph(VERTEX_N,HYPER_EDGES_N);
-    float p = 0.3;
+    float p = 0.5;
     do
     {
         for (int i = 0; i < VERTEX_N; i++)
@@ -34,7 +45,7 @@ int main(int argc, char *argv[])
 
     std::ofstream myFile;
 
-    std::string filename = "../resources/h_test_hypergraph_"+ std::to_string(VERTEX_N) + "_"+ std::to_string(HYPER_EDGES_N) + ".txt";
+    std::string filename = "../resources/h_test_hypergraph_"+ std::to_string(VERTEX_N) + "_"+ std::to_string(HYPER_EDGES_N) + "_"+ std::to_string(p) + ".txt";
     myFile.open(filename);
     std::stringstream ss;
     ss << VERTEX_N << "\n";
