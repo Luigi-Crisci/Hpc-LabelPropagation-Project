@@ -1,5 +1,6 @@
 #include "utils.cpp"
 #include <queue>
+#include <omp.h>
 
 void shuffle(int *element, int size, MT::MersenneTwist rng)
 {
@@ -9,7 +10,7 @@ void shuffle(int *element, int size, MT::MersenneTwist rng)
         for (i = 0; i < size - 1; i++)
         {
             size_t j = i + GENRANDOM(rng) / (RAND_MAX / (size - i) + 1);
-            
+
             int temp = element[j];
             element[j] = element[i];
             element[i] = temp;
@@ -47,7 +48,7 @@ std::unordered_map<int, std::unordered_set<int> *> *reverse_map(std::unordered_m
 int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vlabel, std::unordered_map<int, int> *heLables, MT::MersenneTwist rng)
 {
     std::bitset<MAX_SIZE> *edges_bitset = GET_EDGES(h, v);
-    
+
     int edges_size = edges_bitset->count();
 
     if (edges_size == 0)
@@ -83,7 +84,7 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
         }
     }
 
-    delete(vertex_label_list);
+    delete (vertex_label_list);
 
     if (vlabel->count(v) && max_vertex_label_found->find(vlabel->at(v)) != max_vertex_label_found->end())
         return vlabel->at(v);
@@ -91,7 +92,7 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
 }
 
 int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabel, std::unordered_map<int, int> *heLables, MT::MersenneTwist rng)
-{   
+{
     std::bitset<MAX_SIZE> *vertices_bitset = GET_VERTICES(h, e);
 
     int vertices_size = vertices_bitset->count();
@@ -131,33 +132,34 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
         }
     }
 
-    delete(edge_label_list);
+    delete (edge_label_list);
 
     if (heLables->count(e) && max_edge_label_found->find(heLables->at(e)) != max_edge_label_found->end())
         return heLables->at(e);
     return *(max_edge_label_found->begin());
 }
 
-
 int bfs(HyperGraph *h, int e)
 {
-    bool** graph = hypergraph_to_graph(h);
+    bool **graph = hypergraph_to_graph(h);
     size_t graph_size = h->nEdge;
 
     std::queue<int> frontier;
-    std::vector<bool> checked(graph_size,false);
+    std::vector<bool> checked(graph_size, false);
     frontier.push(e);
-    
-    int current = -1,count = 0;
-    while(!frontier.empty()){
+
+    int current = -1, count = 0;
+    while (!frontier.empty())
+    {
         current = frontier.front();
         frontier.pop();
 
         for (int i = 0; i < graph_size; i++)
-        {  
+        {
             bool connected = graph[current][i];
             bool c = !checked[i];
-            if(graph[current][i] && !checked[i]){
+            if (graph[current][i] && !checked[i])
+            {
                 checked[i] = true;
                 frontier.push(i);
                 count++;
@@ -169,23 +171,22 @@ int bfs(HyperGraph *h, int e)
 
 bool is_hypergraph_connected(HyperGraph *h)
 {
-    return bfs(h,0) == h->nEdge;
+    return bfs(h, 0) == h->nEdge;
 }
 
 find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinder parameters)
 {
-    #ifdef DEBUG
-        std::chrono::steady_clock::time_point start;
-        start = std::chrono::steady_clock::now();
-    #endif // DEBUG
+#ifdef DEBUG
+    std::chrono::steady_clock::time_point start;
+    start = std::chrono::steady_clock::now();
+#endif // DEBUG
 
-    //TODO: Parallelize BFS
     assert(is_hypergraph_connected(h));
 
-    #ifdef DEBUG
-        std::cout<<"Time Is_Hypergraph connected: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
-        start = std::chrono::steady_clock::now();
-    #endif // DEBUG
+#ifdef DEBUG
+    std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
+    start = std::chrono::steady_clock::now();
+#endif // DEBUG
 
     MT::MersenneTwist rng;
     rng.init_genrand(parameters.seed);
@@ -208,53 +209,63 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     bool stop = false;
     int current_iter;
 
-    #ifdef DEBUG
-        std::cout<<"Time Parameter initialization: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
-        start = std::chrono::steady_clock::now();
-        std::chrono::steady_clock::time_point start_inner;
-    #endif // DEBUG
+#ifdef DEBUG
+    std::cout << "Time Parameter initialization: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
+    start = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point start_inner;
+#endif // DEBUG
+
+    int num_edge = h->nEdge;
+    int num_vertex = h->nVertex;
+    int current_edge;
+    int new_label, current_vertex;
 
     for (current_iter = 1; !stop && current_iter < parameters.max_iter; current_iter++)
     {
         stop = true;
-        #ifdef DEBUG
-            start_inner = std::chrono::steady_clock::now();
-        #endif // DEBUG
-        shuffle(edges, h->nEdge, rng);
+#ifdef DEBUG
+        start_inner = std::chrono::steady_clock::now();
+#endif // DEBUG
 
-        for (int i = 0; i < h->nEdge; i++)
+        shuffle(edges, num_edge, rng);
+
+//TODO: Padding for edges vector?
+#pragma omp parallel for private(current_edge)
+        for (int i = 0; i < num_edge; i++)
         {
-            int current_edge = edges[i];
-            if (GET_EDGE_VERTICES_CONNECTED_NUMBER(h, current_edge) == 0)
-                continue;
-            (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
+            current_edge = edges[i];
+            if (GET_EDGE_VERTICES_CONNECTED_NUMBER(h, current_edge) > 0)
+                (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
         }
+        
+#ifdef DEBUG
+        std::cout << current_iter << " - Edge Label: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0 << std::endl;
+        start_inner = std::chrono::steady_clock::now();
+#endif // DEBUG
 
-        #ifdef DEBUG
-            std::cout<<current_iter<<" - Edge Label: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0<<std::endl;
-            start_inner = std::chrono::steady_clock::now();
-        #endif // DEBUG
+        shuffle(vertices, num_vertex, rng);
 
-        shuffle(vertices, h->nVertex, rng);
-
-        for (int i = 0; i < h->nVertex; i++)
+// #pragma omp parallel for private(new_label, current_vertex)
+        for (int i = 0; i < num_vertex; i++)
         {
-            int current_vertex = vertices[i];
-            int new_label = compute_vertex_label(h, current_vertex, vLabel, heLabels, rng);
+            current_vertex = vertices[i];
+            std::cout<<"1 - "<<current_vertex<<" - "<<vLabel->size()<<std::endl;
+            new_label = compute_vertex_label(h, current_vertex, vLabel, heLabels, rng);
+            std::cout<<"2 - "<<current_vertex<<" - "<<vLabel->size()<<std::endl;
             if (new_label != vLabel->at(current_vertex))
                 stop = false;
 
             (*vLabel)[current_vertex] = new_label;
         }
-         #ifdef DEBUG
-           std::cout<<current_iter<<" - Vertex Label: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0<<std::endl;
-        #endif // DEBUG
+#ifdef DEBUG
+        std::cout << current_iter << " - Vertex Label: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0 << std::endl;
+#endif // DEBUG
     }
 
-    #ifdef DEBUG
-        std::cout<<"Time Community for: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
-        start = std::chrono::steady_clock::now();
-    #endif // DEBUG
+#ifdef DEBUG
+    std::cout << "Time Community for: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
+    start = std::chrono::steady_clock::now();
+#endif // DEBUG
 
     //Get sets of Vertices lables
     std::unordered_map<int, std::unordered_set<int> *> *vertices_label_set = reverse_map(vLabel);
@@ -268,34 +279,38 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
     //Collapse all edges sets into a global set
     std::unordered_set<std::unordered_set<int> *> *edges_set = new std::unordered_set<std::unordered_set<int> *>(edges_label_set->size());
+// #pragma omp parallel for 
     for (auto it = edges_label_set->begin(); it != edges_label_set->end(); it++)
         edges_set->insert(it->second);
 
-    int* vertices_labels = (int*) calloc(h->nVertex,sizeof(int));
-    int* edges_labels = (int*) calloc(h->nEdge,sizeof(int));
+    int *vertices_labels = (int *)calloc(h->nVertex, sizeof(int));
+    int *edges_labels = (int *)calloc(h->nEdge, sizeof(int));
 
-    //Collapse vertex labels into array
-    for (int i = 0; i < h->nVertex; i++)
-        vertices_labels[i]= vLabel->at(i);
+//Collapse vertex labels into array
+// #pragma omp parallel for 
+    for (int i = 0; i < num_vertex; i++)
+        vertices_labels[i] = vLabel->at(i);
 
-    //Collapse vertex labels into array
-    for (int i = 0; i < h->nEdge; i++)
+//Collapse vertex labels into array
+// #pragma omp parallel for 
+    for (int i = 0; i < num_edge; i++)
         if (IS_EDGE_EMPTY(h, i))
-            edges_labels[i]=-1;
+            edges_labels[i] = -1;
         else
-            edges_labels[i]= heLabels->at(i);
+            edges_labels[i] = heLabels->at(i);
 
-    delete(vLabel);
-    delete(heLabels);
+    #pragma omp barrier
+    
+    delete (vLabel);
+    delete (heLabels);
     free(vertices);
     free(edges);
-    delete(vertices_label_set);
-    delete(edges_label_set);
+    delete (vertices_label_set);
+    delete (edges_label_set);
 
-    #ifdef DEBUG
-        std::cout<<"Parameter finalization for: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
-    #endif // DEBUG
+#ifdef DEBUG
+    std::cout << "Parameter finalization for: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
+#endif // DEBUG
 
-    return new find_communities_struct(vertices_sets, edges_set, vertices_labels,h->nVertex, edges_labels, h->nEdge, current_iter);
+    return new find_communities_struct(vertices_sets, edges_set, vertices_labels, h->nVertex, edges_labels, h->nEdge, current_iter);
 }
-
