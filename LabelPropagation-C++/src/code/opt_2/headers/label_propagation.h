@@ -19,8 +19,8 @@
 #define IS_EDGE_EMPTY(h, e) get_vertices_number(h, e) == 0 ? true : false
 #define IS_CONNECTED_TO_EDGE(h, v, e) h->v2he[v].test(e)
 #define IS_CONNECTED_TO_VERTEX(h, e, v) h->he2v[e].test(e)
-#define GET_EDGES(h, v) h->v2he[v]
-#define GET_VERTICES(h, e) h->he2v[e]
+#define GET_EDGES(h, v) &(h->v2he[v])
+#define GET_VERTICES(h, e) &(h->he2v[e])
 
 #define MAX_SIZE 2000
 typedef struct CFLabelPropagationFinder

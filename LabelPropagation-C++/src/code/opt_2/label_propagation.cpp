@@ -106,14 +106,14 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     //TODO work in progress dio
     // //std::map<int, bool> *vertices_map = GET_VERTICES(h, e);
     
-    std::bitset<MAX_SIZE> vertices_bitset = GET_VERTICES(h, e);
+    std::bitset<MAX_SIZE> *vertices_bitset = GET_VERTICES(h, e);
 
-    int vertices_size = vertices_bitset.count();
+    int vertices_size = vertices_bitset->count();
 
     if (vertices_size == 0)
         return -1;
 
-    // // int *vertices = collapse_map(vertices_map);
+    int *vertices = get_vertices_indices(vertices_bitset)
 
     int max = 0, current_label, current_vertex;
     int current_index;
