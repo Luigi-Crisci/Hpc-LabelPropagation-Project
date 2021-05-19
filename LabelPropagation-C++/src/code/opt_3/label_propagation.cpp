@@ -228,8 +228,10 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
         vLabel->insert({i, i});
     }
 
-    for (int i = 0; i < h->nEdge; i++)
+    for (int i = 0; i < h->nEdge; i++){
+        heLabels->insert({i,-1});
         edges[i] = i;
+    }
 
     bool stop = false;
     int current_iter;
@@ -270,7 +272,7 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
         shuffle(vertices, num_vertex, rng);
 
-// #pragma omp parallel for private(new_label, current_vertex)
+#pragma omp parallel for private(new_label, current_vertex)
         for (int i = 0; i < num_vertex; i++)
         {
             current_vertex = vertices[i];
