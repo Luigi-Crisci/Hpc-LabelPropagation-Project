@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     rng.init_genrand(SEED);
 
     HyperGraph *h = new HyperGraph(VERTEX_N,HYPER_EDGES_N);
-    float p = 0.5;
+    float p = 0.7;
     do
     {
         for (int i = 0; i < VERTEX_N; i++)
