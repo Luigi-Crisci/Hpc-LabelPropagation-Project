@@ -3,7 +3,7 @@
 #include "utils.cpp"
 #include <queue>
 
-void shuffle(std::bitset<MAX_SIZE> *bit_set, int size, MT::MersenneTwist rng)
+void shuffle(int *vet, int size, MT::MersenneTwist rng)
 {
     if (size > 1)
     {
@@ -11,10 +11,9 @@ void shuffle(std::bitset<MAX_SIZE> *bit_set, int size, MT::MersenneTwist rng)
         for (i = 0; i < size - 1; i++)
         {
             size_t j = i + GENRANDOM(rng) / (RAND_MAX / (size - i) + 1);
-            
-            bool temp = bit_set->test(j);
-            bit_set->set(j, bit_set->test(i));
-            bit_set->set(i, temp);
+            int temp = vet[j];
+            vet[j] = vet[i];
+            vet[i] = temp;
         }
     }
 }
@@ -44,15 +43,6 @@ std::unordered_map<int, std::unordered_set<int> *> *reverse_map(std::unordered_m
     }
 
     return values_label_set;
-}
-
-int get_vertices_number(HyperGraph *h, int edge)
-{
-    int count = 0;
-    for (int i = 0; i < h->nVertex; i++)
-        if (IS_CONNECTED_TO_VERTEX(h, edge, i))
-            count++;
-    return count;
 }
 
 int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vlabel, std::unordered_map<int, int> *heLables, MT::MersenneTwist rng)
@@ -224,7 +214,7 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
         for (int i = 0; i < h->nEdge; i++)
         {
             int current_edge = edges[i];
-            if (get_vertices_number(h, current_edge) == 0)
+            if (GET_EDGE_VERTICES_CONNECTED_NUMBER(h, current_edge) == 0)
                 continue;
             (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
         }

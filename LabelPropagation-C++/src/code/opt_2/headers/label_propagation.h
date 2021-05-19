@@ -21,6 +21,8 @@
 #define IS_CONNECTED_TO_VERTEX(h, e, v) h->he2v[e].test(e)
 #define GET_EDGES(h, v) &(h->v2he[v])
 #define GET_VERTICES(h, e) &(h->he2v[e])
+#define GET_EDGE_VERTICES_CONNECTED_NUMBER(h,e) h->he2v[e].count()
+#define GET_VERTEX_EDGES_CONNECTED_NUMBER(h,v) h->v2he[v].count()
 
 #define MAX_SIZE 2000
 typedef struct CFLabelPropagationFinder
