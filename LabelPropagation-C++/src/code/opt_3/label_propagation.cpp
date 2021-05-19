@@ -237,7 +237,7 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
             if (GET_EDGE_VERTICES_CONNECTED_NUMBER(h, current_edge) > 0)
                 (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
         }
-
+        
 #ifdef DEBUG
         std::cout << current_iter << " - Edge Label: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0 << std::endl;
         start_inner = std::chrono::steady_clock::now();
@@ -245,11 +245,13 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
         shuffle(vertices, num_vertex, rng);
 
-#pragma omp parallel for private(new_label, current_vertex)
+// #pragma omp parallel for private(new_label, current_vertex)
         for (int i = 0; i < num_vertex; i++)
         {
             current_vertex = vertices[i];
+            std::cout<<"1 - "<<current_vertex<<" - "<<vLabel->size()<<std::endl;
             new_label = compute_vertex_label(h, current_vertex, vLabel, heLabels, rng);
+            std::cout<<"2 - "<<current_vertex<<" - "<<vLabel->size()<<std::endl;
             if (new_label != vLabel->at(current_vertex))
                 stop = false;
 
@@ -272,13 +274,12 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
     //Collapse all vertives sets into a global set
     std::unordered_set<std::unordered_set<int> *> *vertices_sets = new std::unordered_set<std::unordered_set<int> *>(vertices_label_set->size());
-#pragma omp parallel for nowait
     for (auto it = vertices_label_set->begin(); it != vertices_label_set->end(); it++)
         vertices_sets->insert(it->second);
 
     //Collapse all edges sets into a global set
     std::unordered_set<std::unordered_set<int> *> *edges_set = new std::unordered_set<std::unordered_set<int> *>(edges_label_set->size());
-#pragma omp parallel for nowait
+// #pragma omp parallel for 
     for (auto it = edges_label_set->begin(); it != edges_label_set->end(); it++)
         edges_set->insert(it->second);
 
@@ -286,12 +287,12 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     int *edges_labels = (int *)calloc(h->nEdge, sizeof(int));
 
 //Collapse vertex labels into array
-#pragma omp parallel for nowait
+// #pragma omp parallel for 
     for (int i = 0; i < num_vertex; i++)
         vertices_labels[i] = vLabel->at(i);
 
 //Collapse vertex labels into array
-#pragma omp parallel for nowait
+// #pragma omp parallel for 
     for (int i = 0; i < num_edge; i++)
         if (IS_EDGE_EMPTY(h, i))
             edges_labels[i] = -1;

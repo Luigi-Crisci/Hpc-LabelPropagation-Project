@@ -1,8 +1,6 @@
 #include "headers/label_propagation.h"
 #define MAXITER 100
 #define SEED 1234
-#define VERTEX_N 10000
-#define HYPER_EDGES_N 600
 
 /*
     Size:
@@ -34,11 +32,6 @@ int main(int argc, char *argv[])
     rng.init_genrand(SEED);
 
     HyperGraph *h = new HyperGraph(VERTEX_N,HYPER_EDGES_N);
-<<<<<<< HEAD
-    float p = 0.7;
-=======
-    // //float p = 0.3;
->>>>>>> f90566759e11e1f2924ad39552bc70b0fc6e35f9
     do
     {
         for (int i = 0; i < VERTEX_N; i++)
