@@ -57,13 +57,22 @@ int get_vertices_number(HyperGraph *h, int edge)
 
 int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vlabel, std::unordered_map<int, int> *heLables, MT::MersenneTwist rng)
 {
-    std::map<int, bool> *edges_map = GET_EDGES(h, v);
-    int edges_size = edges_map->size();
+    //std::map<int, bool> *edges_map = GET_EDGES(h, v);
+
+    std::bitset<MAX_SIZE> edges_bitset = GET_EDGES(h, v);
+    
+    int edges_size = edges_bitset.count();
 
     if (edges_size == 0)
         return -1;
 
-    int *edges = collapse_map(edges_map);
+
+    // int edges_size = edges_map->size();
+
+    // if (edges_size == 0)
+    //     return -1;
+
+    // int *edges = collapse_map(edges_map);
     std::unordered_map<int, int> *vertex_label_list = new std::unordered_map<int, int>;
 
     int max = 0;
@@ -113,7 +122,7 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     if (vertices_size == 0)
         return -1;
 
-    int *vertices = collapse_map(vertices_map);
+    // int *vertices = collapse_map(vertices_map);
 
     int max = 0, current_label, current_vertex, current_index;
 
