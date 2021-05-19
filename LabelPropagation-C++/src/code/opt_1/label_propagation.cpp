@@ -1,9 +1,9 @@
 #include "headers/label_propagation.h"
 #include "headers/mtrnd.h"
 
-// #ifdef DEBUG
+#ifdef DEBUG
     #include<chrono>
-// #endif
+#endif
 
 void shuffle(int *array, int size, MT::MersenneTwist rng)
 {
@@ -179,17 +179,19 @@ bool is_hypergraph_connected(HyperGraph *h)
 
 find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinder parameters)
 {
-    std::chrono::steady_clock::time_point start;
-    // #ifdef DEBUG
+    #ifdef DEBUG
+        std::chrono::steady_clock::time_point start;
         start = std::chrono::steady_clock::now();
-    // #endif // DEBUG
+    #endif // DEBUG
+
     //TODO: Parallelize BFS
     assert(is_hypergraph_connected(h));
-    // #ifdef DEBUG
-    std::cout<<"Time Is_Hypergraph connected: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
-    // #endif // DEBUG
+    
+    #ifdef DEBUG
+        std::cout<<"Time Is_Hypergraph connected: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
+        start = std::chrono::steady_clock::now();
+    #endif // DEBUG
 
-    start = std::chrono::steady_clock::now();
 
     // TODO: Find a way to have a multicore random > This is multithread
     MT::MersenneTwist rng;
@@ -212,15 +214,20 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
     bool stop = false;
     int current_iter;
-    std::cout<<"Time Parameter initialization: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
+
+    #ifdef DEBUG
+        std::cout<<"Time Parameter initialization: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
+        start = std::chrono::steady_clock::now();
+        std::chrono::steady_clock::time_point start_inner;
+    #endif // DEBUG
     
-    start = std::chrono::steady_clock::now();
-    std::chrono::steady_clock::time_point start_inner;
     for (current_iter = 1; !stop && current_iter < parameters.max_iter; current_iter++)
     {
         stop = true;
-        
-        start_inner = std::chrono::steady_clock::now();
+        #ifdef DEBUG
+            start_inner = std::chrono::steady_clock::now();
+        #endif // DEBUG
+
         shuffle(edges, h->nEdge, rng);
         for (int i = 0; i < h->nEdge; i++)
         {
@@ -229,10 +236,12 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
                 continue;
             (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
         }
-        std::cout<<current_iter<<" - Edge Label: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0<<std::endl;
 
-
-        start_inner = std::chrono::steady_clock::now();
+        #ifdef DEBUG
+            std::cout<<current_iter<<" - Edge Label: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0<<std::endl;
+            start_inner = std::chrono::steady_clock::now();
+        #endif // DEBUG
+        
         shuffle(vertices, h->nVertex, rng);
         for (int i = 0; i < h->nVertex; i++)
         {
@@ -243,11 +252,16 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
             (*vLabel)[current_vertex] = new_label;
         }
-        std::cout<<current_iter<<" - Vertex Label: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0<<std::endl;
+        #ifdef DEBUG
+           std::cout<<current_iter<<" - Vertex Label: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0<<std::endl;
+        #endif // DEBUG
 
     }
-    std::cout<<"Time Community for: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
-    start = std::chrono::steady_clock::now();
+    
+    #ifdef DEBUG
+        std::cout<<"Time Community for: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
+        start = std::chrono::steady_clock::now();
+    #endif // DEBUG
 
     //Get sets of Vertices lables
     std::unordered_map<int, std::unordered_set<int> *> *vertices_label_set = reverse_map(vLabel);
@@ -287,7 +301,9 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     delete(vertices_label_set);
     delete(edges_label_set);
 
-    std::cout<<"Parameter finalization for: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
+    #ifdef DEBUG
+        std::cout<<"Parameter finalization for: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
+    #endif // DEBUG
     return new find_communities_struct(vertices_sets, edges_set, vertices_labels,h->nVertex, edges_labels, h->nEdge, current_iter);
 }
 

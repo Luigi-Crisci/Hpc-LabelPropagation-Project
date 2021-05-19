@@ -6,37 +6,36 @@
 #define MAXITER 100
 #define SEED 1234
 
-void populate_from_file(HyperGraph *hyper_graph, std::string file_name){
+void populate_from_file(HyperGraph *hyper_graph, std::string file_name)
+{
     std::ifstream file;
     std::string str;
     file.open(file_name);
 
-    if(!file.is_open()){
+    if (!file.is_open())
+    {
         perror("Error Open");
         exit(EXIT_FAILURE);
     }
 
-    while(getline(file, str)){ }
+    while (getline(file, str))
+    {
+    }
 
     file.close();
 
     int counter = 0;
-    // #pragma omp parallel for 
     for (int i = 0; i < hyper_graph->nVertex; i++)
+    {
+        for (int j = 0; j < hyper_graph->nEdge; j++)
         {
-            for (int j = 0; j < hyper_graph->nEdge; j++)
+            if (str[counter++] == '1')
             {
-                if (str[counter] == '1')
-                {
-                    hyper_graph->v2he[i]->emplace(j, true);
-                    hyper_graph->he2v[j]->emplace(i, true);
-
-                }
-
-                counter++;
+                hyper_graph->v2he[i].set(j, true);
+                hyper_graph->he2v[j].set(i, true);
             }
         }
-
+    }
 }
 
 int main(int argc, char *argv[]){
