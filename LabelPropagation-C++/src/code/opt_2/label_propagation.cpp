@@ -3,7 +3,7 @@
 #include "utils.cpp"
 #include <queue>
 
-void shuffle(std::bitset<MAX_SIZE> *bit_set, int size, MT::MersenneTwist rng)
+void shuffle(int *element, int size, MT::MersenneTwist rng)
 {
     if (size > 1)
     {
@@ -12,9 +12,9 @@ void shuffle(std::bitset<MAX_SIZE> *bit_set, int size, MT::MersenneTwist rng)
         {
             size_t j = i + GENRANDOM(rng) / (RAND_MAX / (size - i) + 1);
             
-            bool temp = bit_set->test(j);
-            bit_set->set(j, bit_set->test(i));
-            bit_set->set(i, temp);
+            int temp = element[j];
+            element[j] = element[i];
+            element[i] = temp;
         }
     }
 }
@@ -103,8 +103,8 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
 int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabel, std::unordered_map<int, int> *heLables, MT::MersenneTwist rng)
 {
 
-    //TODO work in progress dio
-    // //std::map<int, bool> *vertices_map = GET_VERTICES(h, e);
+    //TODO work in progress diolol
+    //std::map<int, bool> *vertices_map = GET_VERTICES(h, e);
     
     std::bitset<MAX_SIZE> vertices_bitset = GET_VERTICES(h, e);
 
@@ -113,21 +113,20 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     if (vertices_size == 0)
         return -1;
 
-    // // int *vertices = collapse_map(vertices_map);
+    int *vertices = collapse_map(vertices_map);
 
-    int max = 0, current_label, current_vertex;
-    int current_index;
+    int max = 0, current_label, current_vertex, current_index;
 
     std::unordered_map<int, int> *edge_label_list = new std::unordered_map<int, int>;
     std::unordered_set<int> *max_edge_label_found = new std::unordered_set<int>; //this is not freed
 
-    shuffle(&vertices_bitset, vertices_size, rng);
+    shuffle(&vertices, vertices_size, rng);
 
     // TODO
     for (int i = 0; i < vertices_size; i++)
     {
         current_index; 
-        current_vertex = vertices_bitset[i];
+        current_vertex = vertices[i];
         current_label = vlabel->at(current_vertex);
 
         if (edge_label_list->count(current_label) == 1)
