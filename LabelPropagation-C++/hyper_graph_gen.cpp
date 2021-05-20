@@ -1,6 +1,7 @@
 #include "headers/label_propagation.h"
 #define MAXITER 100
 #define SEED 1234
+
 /*
     Size:
         small 5000 300
@@ -18,7 +19,7 @@ int main(int argc, char *argv[])
     if (argc < 3)
     {
         std::cout << "Missing some arguments!!"<< std::endl;
-        std::cout << "Usage: \n\tbin/create_h VERTEX_N HYPER_EDGES_N p" << std::endl;
+        std::cout << "Usage: \n\tbin/create_h [vertex_number] [edges_number] [p]" << std::endl;
         exit(0);
     }
 
