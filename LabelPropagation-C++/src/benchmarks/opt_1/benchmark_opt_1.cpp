@@ -1,7 +1,6 @@
 #include "headers/label_propagation.h"
 #include <iostream>
 #include <fstream>
-#include <omp.h>
 
 #define MAXITER 100
 #define SEED 1234
@@ -22,10 +21,6 @@ void populate_from_file(HyperGraph *hyper_graph, std::string file_name){
 
     int counter = 0;
 
-    // std::cout<<omp_get_max_threads()<<std::endl;
-    // #pragma omp parallel for 
-
-
     for (int i = 0; i < hyper_graph->nVertex; i++)
         {
             for (int j = 0; j < hyper_graph->nEdge; j++)
@@ -36,11 +31,9 @@ void populate_from_file(HyperGraph *hyper_graph, std::string file_name){
                     hyper_graph->he2v[j]->emplace(i, true);
 
                 }
-
                 counter++;
             }
         }
-
 }
 
 int main(int argc, char *argv[]){

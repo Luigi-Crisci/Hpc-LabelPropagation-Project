@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
     std::string filename = "../resources/h_test_hypergraph_"+ std::to_string(VERTEX_N) + "_"+ std::to_string(HYPER_EDGES_N) + "_"+ std::to_string(p) + ".txt";
     myFile.open(filename);
     std::stringstream ss;
+    ss << p << "\n";
     ss << VERTEX_N << "\n";
     ss << HYPER_EDGES_N << "\n";
 
