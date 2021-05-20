@@ -18,14 +18,8 @@ void shuffle(int *element, int size, MT::MersenneTwist rng)
     }
 }
 
-/**
- * @brief Get the sets from map object
- * Extract how many Key are related to the same value, collapsing them into a set
- * @return A map of type Value => [Key1,Key2,...]
- */
 std::unordered_map<int, std::unordered_set<int> *> *reverse_map(std::unordered_map<int, int> *map)
 {
-
     std::unordered_map<int, std::unordered_set<int> *> *values_label_set = new std::unordered_map<int, std::unordered_set<int> *>;
     for (auto it = map->begin(); it != map->end(); it++)
     {
@@ -142,6 +136,8 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     return *(max_edge_label_found->begin());
 }
 
+
+//TODO:: non sono sicuro che la parallelizzazione funziona
 int bfs(HyperGraph *h, int e)
 {
     bool **graph = hypergraph_to_graph(h);
@@ -154,18 +150,22 @@ int bfs(HyperGraph *h, int e)
     int current = -1, count = 0;
     while (!frontier.empty())
     {
-        current = frontier.front();
+        current = frontier.front();//TODO:: usare indice array per simulare la coda così da poter parallelizzare?
         frontier.pop();
 
+        #pragma omp parallel for firstprivate(current, graph_size)
         for (int i = 0; i < graph_size; i++)
         {
             bool connected = graph[current][i];
             bool c = !checked[i];
             if (graph[current][i] && !checked[i])
             {
-                checked[i] = true;
-                frontier.push(i);
-                count++;
+                #pragma omp critical
+                {
+                    checked[i] = true;
+                    frontier.push(i);
+                    count++;
+                } 
             }
         }
     }
@@ -179,18 +179,6 @@ bool is_hypergraph_connected(HyperGraph *h)
 
 find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinder parameters)
 {
-#ifdef DEBUG
-    std::chrono::steady_clock::time_point start;
-    start = std::chrono::steady_clock::now();
-#endif // DEBUG
-
-    
-
-#ifdef DEBUG
-    std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
-    start = std::chrono::steady_clock::now();
-#endif // DEBUG
-
     int num_edge = h->nEdge;
     int num_vertex = h->nVertex;
     int current_edge;
@@ -226,7 +214,16 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
             }
             #pragma omp single nowait
             {
+#ifdef DEBUG
+            std::chrono::steady_clock::time_point start;
+            start = std::chrono::steady_clock::now();
+#endif // DEBUG
                 assert(is_hypergraph_connected(h));
+
+#ifdef DEBUG
+            std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
+            start = std::chrono::steady_clock::now();
+#endif // DEBUG
             } 
             #pragma omp barrier
             #pragma omp single nowait
@@ -251,7 +248,15 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
             }
             #pragma omp single nowait
             {
+#ifdef DEBUG
+            std::chrono::steady_clock::time_point start;
+            start = std::chrono::steady_clock::now();
+#endif // DEBUG
                 assert(is_hypergraph_connected(h));
+
+#ifdef DEBUG
+            std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
+#endif // DEBUG
             }
             #pragma omp barrier
             #pragma omp single nowait
@@ -264,7 +269,7 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     
 
 #ifdef DEBUG
-    std::cout << "Time Parameter initialization: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
+    std::chrono::steady_clock::time_point start;
     start = std::chrono::steady_clock::now();
 #endif // DEBUG
     for (current_iter = 1; !stop && current_iter < parameters.max_iter; current_iter++)
