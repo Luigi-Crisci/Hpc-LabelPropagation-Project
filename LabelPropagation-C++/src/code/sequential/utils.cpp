@@ -50,6 +50,6 @@ int* collapse_map(std::map<int,bool> *map){
     int* vector = (int*) calloc(map->size(),sizeof(int));
     int i = 0;
     for(auto k: *map)
-        vector[i] = k.first;
+        vector[i++] = k.first;
     return vector;
 }

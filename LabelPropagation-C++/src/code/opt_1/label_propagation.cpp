@@ -7,7 +7,7 @@
 
 void shuffle(int *array, int size, MT::MersenneTwist rng)
 {
-    
+   
     if (size > 1)
     {
         size_t i;

@@ -38,13 +38,15 @@ function our_get_connected_components(h::Hypergraph)
 end
 
 ### Write code here
-Random.seed!(1234);
+Random.seed!(0);
 
-h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_5000_300.txt")
+h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_1000_80.txt")
 
-cflp = CFLabelPropagationFinder(100, 1234)
+cflp = CFLabelPropagationFinder(100, 0)
 
-@time comms = our_findcommunities(h, cflp)
+comms = our_findcommunities(h, cflp)
+
+comms[:vlabels]
 
 # add_hyperedge!(h)
 # comms = findcommunities(h, cflp)

@@ -53,7 +53,7 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
     if (edges_size == 0)
         return -1;
 
-    int *edges = get_vertices_indices(edges_bitset);
+    int *edges = get_vertices_indices(edges_bitset, h->nEdge);
     std::unordered_map<int, int> *vertex_label_list = new std::unordered_map<int, int>;
 
     int max = 0;
@@ -99,7 +99,7 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     if (vertices_size == 0)
         return -1;
 
-    int *vertices = get_vertices_indices(vertices_bitset);
+    int *vertices = get_vertices_indices(vertices_bitset, h->nVertex);
 
     int max = 0, current_label, current_vertex, current_index;
 

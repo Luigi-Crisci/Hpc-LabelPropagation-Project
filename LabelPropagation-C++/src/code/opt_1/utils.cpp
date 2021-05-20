@@ -2,6 +2,8 @@
 
 void print_find_communities_struct(find_communities_struct* res){
     using namespace std;
+    std::cout<<"Num iterations: "<<res->iter<<std::endl;
+
     std::cout<<"Vertex labels: [";
     for (int i = 0; i < res->vLabel_size; i++)
     {
@@ -50,6 +52,6 @@ int* collapse_map(std::map<int,bool> *map){
     int* vector = (int*) calloc(map->size(),sizeof(int));
     int i = 0;
     for(auto k: *map)
-        vector[i] = k.first;
+        vector[i++] = k.first;
     return vector;
 }
