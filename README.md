@@ -59,5 +59,5 @@
 #### Authors
 
 - Luigi Crisci
-- Domenico Liguoro
+- Domenico Liguori
 - Giuseppe Di Palma
