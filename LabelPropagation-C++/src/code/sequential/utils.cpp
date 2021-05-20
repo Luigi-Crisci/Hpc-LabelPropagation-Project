@@ -2,7 +2,10 @@
 
 void print_find_communities_struct(find_communities_struct* res){
     using namespace std;
-    std::cout<<"Vertex labels: [";
+
+    cout<<"Num iterations: "<<res->iter<<std::endl;
+
+    cout<<"Vertex labels: [";
     for (int i = 0; i < res->vLabel_size; i++)
     {
         std::cout<<res->vLabel[i]<<", ";

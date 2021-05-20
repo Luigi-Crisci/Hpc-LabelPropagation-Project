@@ -5,5 +5,3 @@ target_link_libraries(benchmark_sequential label_propagation)
 
 set(CMAKE_CXX_FLAGS "-O3")
 
-set(CMAKE_CXX_FLAGS "-fopenmp")
-
