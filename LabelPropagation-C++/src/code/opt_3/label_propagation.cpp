@@ -213,35 +213,33 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     start = std::chrono::steady_clock::now();
 #endif // DEBUG
 
+    int num_edge = h->nEdge;
+    int num_vertex = h->nVertex;
+    int current_edge;
+    int new_label, current_vertex;
+
     MT::MersenneTwist rng;
     rng.init_genrand(parameters.seed);
 
     std::unordered_map<int, int> *vLabel = new std::unordered_map<int, int>;
     std::unordered_map<int, int> *heLabels = new std::unordered_map<int, int>;
 
-    int *vertices = (int *)calloc(h->nVertex, sizeof(int));
-    int *edges = (int *)calloc(h->nEdge, sizeof(int));
+    int *vertices = (int *)calloc(num_vertex, sizeof(int));
+    int *edges = (int *)calloc(num_edge, sizeof(int));
 
-    for (int i = 0; i < h->nVertex; i++)
+    for (int i = 0; i < num_vertex; i++)
     {
         vertices[i] = i;
         vLabel->insert({i, i});
     }
 
-    for (int i = 0; i < h->nEdge; i++){
+    for (int i = 0; i < num_edge; i++){
         heLabels->insert({i,-1});
         edges[i] = i;
     }
 
     bool stop = false;
     int current_iter;
-
-
-
-    int num_edge = h->nEdge;
-    int num_vertex = h->nVertex;
-    int current_edge;
-    int new_label, current_vertex;
 
 #ifdef DEBUG
     std::cout << "Time Parameter initialization: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
@@ -250,7 +248,6 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
     for (current_iter = 1; !stop && current_iter < parameters.max_iter; current_iter++)
     {
-        
         #pragma omp parallel
         {
             #pragma omp atomic write //has implicit barrier
@@ -317,7 +314,6 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     //TODO questa regione ha inserimenti quindi la parallelizzazione non è banale
     for (auto it = edges_label_set->begin(); it != edges_label_set->end(); it++)
         edges_set->insert(it->second);
-
 
     //TODO questa regione ha inserimenti quindi la parallelizzazione non è banale
     for (int i = 0; i < num_vertex; i++)
