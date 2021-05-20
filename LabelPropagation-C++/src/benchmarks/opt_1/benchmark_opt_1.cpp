@@ -1,8 +1,3 @@
-// benchmark_opt_1 [size] [density]
-//     size: s (small) - m (medium) - l (large)
-//     density: s (sparse) - n (normal) - d (dense)
-
-
 #include "headers/label_propagation.h"
 #include <iostream>
 #include <fstream>
@@ -49,6 +44,16 @@ void populate_from_file(HyperGraph *hyper_graph, std::string file_name){
 }
 
 int main(int argc, char *argv[]){
+
+    if (argc < 2)
+    {
+        std::cout << "Missing some arguments!!" << std::endl;
+        std::cout << "Usage: \n\t"<<argv[0]<<" [size] [density]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "INFO:\tsize: s (small) - m (medium) - l (large)" << std::endl;
+        std::cout << "\tdensity: s (sparse) - n (normal) - d (dense)" << std::endl;
+        exit(0);
+    }
 
     MT::MersenneTwist rng;
     rng.init_genrand(SEED);
