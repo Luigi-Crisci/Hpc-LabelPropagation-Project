@@ -95,5 +95,7 @@ int main(int argc, char *argv[]){
     
     std::cout<<"Find Communities time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 1000.0<<std::endl;
     
+    print_find_communities_struct(return_find_comm);
+
     return 0;
 }

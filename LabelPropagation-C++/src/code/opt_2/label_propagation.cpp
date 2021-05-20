@@ -211,15 +211,15 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     #ifdef DEBUG
         std::cout<<"Time Parameter initialization: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0<<std::endl;
         start = std::chrono::steady_clock::now();
-        std::chrono::steady_clock::time_point start_inner;
+        // std::chrono::steady_clock::time_point start_inner;
     #endif // DEBUG
 
     for (current_iter = 1; !stop && current_iter < parameters.max_iter; current_iter++)
     {
         stop = true;
-        #ifdef DEBUG
-            start_inner = std::chrono::steady_clock::now();
-        #endif // DEBUG
+        // #ifdef DEBUG
+        //     start_inner = std::chrono::steady_clock::now();
+        // #endif // DEBUG
         shuffle(edges, h->nEdge, rng);
 
         for (int i = 0; i < h->nEdge; i++)
@@ -230,10 +230,10 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
             (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
         }
 
-        #ifdef DEBUG
-            std::cout<<current_iter<<" - Edge Label: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0<<std::endl;
-            start_inner = std::chrono::steady_clock::now();
-        #endif // DEBUG
+        // #ifdef DEBUG
+        //     std::cout<<current_iter<<" - Edge Label: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0<<std::endl;
+        //     start_inner = std::chrono::steady_clock::now();
+        // #endif // DEBUG
 
         shuffle(vertices, h->nVertex, rng);
 
@@ -246,9 +246,9 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
             (*vLabel)[current_vertex] = new_label;
         }
-         #ifdef DEBUG
-           std::cout<<current_iter<<" - Vertex Label: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0<<std::endl;
-        #endif // DEBUG
+        //  #ifdef DEBUG
+        //    std::cout<<current_iter<<" - Vertex Label: "<<std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start_inner).count() / 1000.0<<std::endl;
+        // #endif // DEBUG
     }
 
     #ifdef DEBUG

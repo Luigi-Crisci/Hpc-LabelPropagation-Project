@@ -3,6 +3,9 @@
 void print_find_communities_struct(find_communities_struct *res)
 {
     using namespace std;
+
+    std::cout<<"Num iterations: "<<res->iter<<std::endl;
+
     std::cout << "Vertex labels: [";
     for (int i = 0; i < res->vLabel_size; i++)
     {
@@ -36,24 +39,26 @@ void print_find_communities_struct(find_communities_struct *res)
     }
 }
 
-int *get_vertices_indices(std::bitset<MAX_SIZE> *b)
+
+int *get_vertices_indices(std::bitset<MAX_SIZE> *b,int limit)
 {
     int size = b->count();
     int *vector = (int *)calloc(size, sizeof(int));
-    for (int i = 0, j = 0; i < size; i++)
-        if (b->test(i))
+    for (int i = 0,j=0; i < limit; i++)
+        if(b->test(i))
             vector[j++] = i;
     return vector;
 }
+
 
 bool **hypergraph_to_graph(HyperGraph *h)
 {
     size_t ne = h->nEdge;
 
-    bool **matrix = (bool **)calloc(ne, sizeof(bool *));
+    bool** matrix =(bool**) calloc(ne,sizeof(bool*));
     for (size_t i = 0; i < ne; i++)
-        matrix[i] = (bool *)calloc(ne, sizeof(bool));
-
+        matrix[i] = (bool*) calloc(ne,sizeof(bool));
+    
     std::bitset<MAX_SIZE> *b1, *b2;
     for (int i = 0; i < ne; i++)
     {

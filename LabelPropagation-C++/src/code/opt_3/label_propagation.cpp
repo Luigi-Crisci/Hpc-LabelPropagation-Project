@@ -55,7 +55,7 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
     if (edges_size == 0)
         return -1;
 
-    int *edges = get_vertices_indices(edges_bitset);
+    int *edges = get_vertices_indices(edges_bitset,h->nEdge);
     std::unordered_map<int, int> *vertex_label_list = new std::unordered_map<int, int>;
 
     int max = 0;
@@ -65,39 +65,19 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
 
     shuffle(edges, edges_size, rng);
 
-
-    
     for (int i = 0; i < edges_size; i++)
     {
         current_edge = edges[i];
-        //TODO: Criminale
-        try{
-            current_label = heLables->at(current_edge);
-        }catch(const std::out_of_range& oor){
-            std::cout<<"current_label = heLables->at(current_edge);"<<std::endl;
-            std::cout<<"heLables->size() = "<<heLables->size()<<std::endl;
-            std::cout<<"current_edge = "<<current_edge<<std::endl;
+        current_label = heLables->at(current_edge);
 
-            std::cout<<"heLables"<<std::endl;
-            for(auto el:*heLables){
-                std::cout<<"    first "<<el.first<<" second "<<el.second<<std::endl;
-            }
-
-            exit(EXIT_FAILURE);
-        }
-        
         if (vertex_label_list->count(current_label) == 1)
             (*vertex_label_list)[current_label] = vertex_label_list->at(current_label) + 1;
         else
             vertex_label_list->insert({current_label, 1});
-        
-        try{
-            if (vertex_label_list->at(current_label) == max)
-                max_vertex_label_found->insert(current_label);
-        }catch(const std::out_of_range& oor){
-            std::cout<<"vertex_label_list->at(current_label) == max"<<std::endl;
-        }
-        
+
+        if (vertex_label_list->at(current_label) == max)
+            max_vertex_label_found->insert(current_label);
+
         if (vertex_label_list->at(current_label) > max)
         {
             max = vertex_label_list->at(current_label);
@@ -105,8 +85,6 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
             max_vertex_label_found->insert(current_label);
         }
     }
-
-    
 
     delete (vertex_label_list);
     //std::cout<<"end"<<std::endl;
@@ -125,7 +103,7 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     if (vertices_size == 0)
         return -1;
 
-    int *vertices = get_vertices_indices(vertices_bitset);
+    int *vertices = get_vertices_indices(vertices_bitset,h->nVertex);
 
     int max = 0, current_label, current_vertex, current_index;
 
@@ -233,8 +211,9 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
         vLabel->insert({i, i});
     }
 
-    for (int i = 0; i < num_edge; i++){
-        heLabels->insert({i,-1});
+    for (int i = 0; i < num_edge; i++)
+    {
+        heLabels->insert({i, -1});
         edges[i] = i;
     }
 
@@ -248,18 +227,13 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
     for (current_iter = 1; !stop && current_iter < parameters.max_iter; current_iter++)
     {
+        stop = true;
+        shuffle(edges, num_edge, rng); //TODO Vectorize
         #pragma omp parallel
         {
-            #pragma omp atomic write //has implicit barrier
-            stop = true;
-        
-            #pragma omp single //has implicit barrier
-            {
-                shuffle(edges, num_edge, rng);
-            }
 
-            //TODO: Padding for edges vector?
-            #pragma omp for private(current_edge) nowait
+//TODO: Padding for edges vector?
+#pragma omp for private(current_edge) nowait
             for (int i = 0; i < num_edge; i++)
             {
                 current_edge = edges[i];
@@ -267,28 +241,28 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
                     (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
             }
 
-
-            #pragma omp single //has implicit barrier
+#pragma omp single 
             {
                 shuffle(vertices, num_vertex, rng);
-            }
-            
-            #pragma omp for private(new_label, current_vertex) nowait
-            for (int i = 0; i < num_vertex; i++) 
-                {
-                    current_vertex = vertices[i];
-                    new_label = compute_vertex_label(h, current_vertex, vLabel, heLabels, rng);
-                    if (new_label != vLabel->at(current_vertex)){
-                        #pragma omp atomic write
-                            stop = false;
-                    }
+            } //has implicit barrier
 
-                    (*vLabel)[current_vertex] = new_label;
+#pragma omp for private(new_label, current_vertex) nowait
+            for (int i = 0; i < num_vertex; i++)
+            {
+                current_vertex = vertices[i];
+                new_label = compute_vertex_label(h, current_vertex, vLabel, heLabels, rng);
+                if (new_label != vLabel->at(current_vertex))
+                {
+// #pragma omp atomic write
+                    stop &= 0;
                 }
+
+                (*vLabel)[current_vertex] = new_label;
+            }
+        // #pragma omp barrier
         }
-    #pragma omp barrier
     }
-        
+
 #ifdef DEBUG
     std::cout << "Time Community for: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
     start = std::chrono::steady_clock::now();
@@ -325,7 +299,7 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
             edges_labels[i] = -1;
         else
             edges_labels[i] = heLabels->at(i);
-    
+
     delete (vLabel);
     delete (heLabels);
     free(vertices);
