@@ -37,13 +37,11 @@ void populate_from_file(HyperGraph *hyper_graph, std::string file_name)
 
 int main(int argc, char *argv[]){
 
-    if (argc < 2)
+    if (argc < 3)
     {
         std::cout << "Missing some arguments!!" << std::endl;
-        std::cout << "Usage: \n\t" << argv[0] << " [size] [density]" << std::endl;
+        std::cout << "Usage: \n\t"<<argv[0]<<" [vertex] [edge] [density]" << std::endl;
         std::cout << std::endl;
-        std::cout << "INFO:\tsize: s (small) - m (medium) - l (large)" << std::endl;
-        std::cout << "\tdensity: s (sparse) - n (normal) - d (dense)" << std::endl;
         exit(0);
     }
 
@@ -55,33 +53,18 @@ int main(int argc, char *argv[]){
     parameters.max_iter = MAXITER;
 
     int nEdge, nVertex;
+    float p;
     std::string file_name;
 
-    if(*argv[1] == 's'){
-        nVertex = 5000;
-        nEdge = 300;
-        file_name = "../resources/h_test_hypergraph_5000_300";
-    }else if(*argv[1] == 'm'){
-        nVertex = 10000;
-        nEdge = 600;
-        file_name = "../resources/h_test_hypergraph_10000_600";
-    }
-    else{
-        nVertex = 20000;
-        nEdge = 1000;
-        file_name = "../resources/h_test_hypergraph_20000_1000";
-    }
+    nVertex = std::stoi(argv[1]);
+    nEdge = std::stoi(argv[2]);
+    p = std::stof(argv[3]);
 
-    if(*argv[2] == 's'){
-        file_name += "_0.300000.txt";
-    }else if(*argv[2] == 'n'){
-        file_name += "_0.500000.txt";
-    }
-    else{
-        file_name += "_0.700000.txt";
-    }
+    file_name = "../resources/h_test_hypergraph_"+std::to_string(nVertex)+"_"+std::to_string(nEdge)+"_"+std::to_string(p)+".txt";
+    std::cout<<file_name<<std::endl;
 
-    std::cout << "Starting [" << argv[0] << "] with size [" << *argv[1] << "] and density [" << *argv[2] << "]" << std::endl;
+    std::cout << "Starting [" << argv[0] << "] with vertex [" << argv[1] << "] "<< ", with edges ["<< argv[2] << "] and density [" << argv[3] << "]" << std::endl;
+
 
     HyperGraph *hypergraph = new HyperGraph(nVertex, nEdge);
     populate_from_file(hypergraph, file_name);

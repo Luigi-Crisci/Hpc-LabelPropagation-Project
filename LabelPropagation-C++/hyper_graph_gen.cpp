@@ -6,7 +6,8 @@
     Size:
         small 5000 300
         medium 10000 600
-        large 20000 1000
+        large 20000 1200
+        very large 40000 2400
 
     Density:
       sparse 0.3
@@ -39,13 +40,14 @@ int main(int argc, char *argv[])
             {
                 if (rng.genrand_real1() <= p)
                 {
-                    h->v2he[i]->try_emplace(j, true);
-                    h->he2v[j]->try_emplace(i, true);
+                    
+                    h->v2he[i].set(j, true);
+                    h->he2v[j].set(i, true);
                 }
                 else
                 {
-                    h->v2he[i]->erase(j);
-                    h->he2v[j]->erase(i);
+                    h->v2he[i].set(j, false);
+                    h->he2v[j].set(i, false);
                 }
             }
         }
@@ -56,7 +58,6 @@ int main(int argc, char *argv[])
     std::string filename = "../resources/h_test_hypergraph_"+ std::to_string(VERTEX_N) + "_"+ std::to_string(HYPER_EDGES_N) + "_"+ std::to_string(p) + ".txt";
     myFile.open(filename);
     std::stringstream ss;
-    ss << p << "\n";
     ss << VERTEX_N << "\n";
     ss << HYPER_EDGES_N << "\n";
 
@@ -64,7 +65,7 @@ int main(int argc, char *argv[])
     {
         for (int j = 0; j < HYPER_EDGES_N; j++)
         {
-            ss << h->v2he[i]->count(j);
+            ss<<h->v2he[i].test(j);
         }
     }
 
