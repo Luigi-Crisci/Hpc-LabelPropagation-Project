@@ -24,7 +24,15 @@
 
 - Small: 5000 x 300
 - Medium: 10000 x 600
-- Big: 20000 x 1000
+- Big: 20000 x 1200
+<!-- - Very big: 40000 x 2400 -->
+
+### Plots:
+- Variable size, p constant (0.3,0.5,0.7)
+- Size Large, p variable [0.2 , 0.8]
+- Parallel
+  - n° core variable, p constant (0.3,0.5,0.7)
+    - Show speedup achieved
 
 ### Density of hypergraph
 
