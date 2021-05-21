@@ -1,7 +1,6 @@
 #include "headers/label_propagation.h"
 #include <iostream>
 #include <fstream>
-#include <omp.h>
 
 #define MAXITER 100
 #define SEED 1234
@@ -18,10 +17,10 @@ void populate_from_file(HyperGraph *hyper_graph, std::string file_name){
 
 
     while(getline(file, str)){ }
+
     int counter = 0;
     file.close();
     
-    //#pragma omp parallel for
     for (int i = 0; i < hyper_graph->nVertex; i++)
         {
             for (int j = 0; j < hyper_graph->nEdge; j++)
@@ -84,8 +83,8 @@ int main(int argc, char *argv[]){
         file_name += "_0.700000.txt";
     }
 
-    std::cout<<"Starting benchmark_sequential with "<<*argv[1]<<" size and "<<*argv[2]<<" density"<<std::endl;
-    
+    std::cout << "Starting [" << argv[0] << "] with size [" << *argv[1] << "] and density [" << *argv[2] << "]" << std::endl;
+
     HyperGraph *hypergraph = new HyperGraph(nVertex, nEdge);
     populate_from_file(hypergraph, file_name);
 
@@ -95,8 +94,9 @@ int main(int argc, char *argv[]){
     
     std::cout<<"Find Communities time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 1000.0<<std::endl;
 
+    #ifdef DEBUG    
+        print_find_communities_struct(return_find_comm);    
+    #endif // DEBUG
 
-    print_find_communities_struct(return_find_comm);
-    
     return 0;
 }

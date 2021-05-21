@@ -1,7 +1,6 @@
 #include "headers/label_propagation.h"
 #include <iostream>
 #include <fstream>
-#include <omp.h>
 
 #define MAXITER 100
 #define SEED 1234
@@ -18,9 +17,7 @@ void populate_from_file(HyperGraph *hyper_graph, std::string file_name)
         exit(EXIT_FAILURE);
     }
 
-    while (getline(file, str))
-    {
-    }
+    while (getline(file, str)){ }
 
     file.close();
 
@@ -84,7 +81,7 @@ int main(int argc, char *argv[]){
         file_name += "_0.700000.txt";
     }
 
-    std::cout<<"Starting benchmark_opt_2 with "<<*argv[1]<<" size and "<<*argv[2]<<" density"<<std::endl;
+    std::cout<<"Starting ["<< argv[0] <<"] with size ["<<*argv[1]<<"] and density ["<<*argv[2]<<"]"<<std::endl;
     
     HyperGraph *hypergraph = new HyperGraph(nVertex, nEdge);
     populate_from_file(hypergraph, file_name);
@@ -94,7 +91,9 @@ int main(int argc, char *argv[]){
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     
     std::cout<<"Find Communities time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 1000.0<<std::endl;
-    
-    print_find_communities_struct(return_find_comm);
+
+    #ifdef DEBUG
+        print_find_communities_struct(return_find_comm);
+    #endif // DEBUG
     return 0;
 }

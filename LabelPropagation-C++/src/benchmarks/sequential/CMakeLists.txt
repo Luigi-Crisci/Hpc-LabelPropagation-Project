@@ -4,4 +4,3 @@ include_directories("../../code/sequential")
 target_link_libraries(benchmark_sequential label_propagation)
 
 set(CMAKE_CXX_FLAGS "-O3")
-

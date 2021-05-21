@@ -16,3 +16,4 @@ target_include_directories(label_propagation
   )
 
 
+# set(CMAKE_CXX_FLAGS "-DDEBUG")
