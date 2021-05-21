@@ -16,7 +16,8 @@
 - [ ] Other optimisation(ask);
 - [ ] Perform the tests;
 - [ ] Producing charts;
-- [ ] Making a presentation;
+  - [ ] ??????
+- [ ] Making a presentation(25 May);
 - [ ] Writing the report(main.tex).
 
 ### Test size
@@ -24,6 +25,12 @@
 - Small: 5000 x 300
 - Medium: 10000 x 600
 - Big: 20000 x 1000
+
+### Density of hypergraph
+
+- 0.3
+- 0.5
+- 0.7
 
 ### Test overview
 
