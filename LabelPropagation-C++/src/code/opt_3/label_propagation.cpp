@@ -225,12 +225,8 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
             std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
             start = std::chrono::steady_clock::now();
 #endif // DEBUG
-            } 
-            #pragma omp barrier
-            #pragma omp single nowait
-            {
-                shuffle(edges, num_edge, rng);
-            }
+            }   
+                
         }
     }else{
         #pragma omp parallel
@@ -259,13 +255,10 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
             std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
 #endif // DEBUG
             }
-            #pragma omp barrier
-            #pragma omp single nowait
-            {
-                shuffle(edges, num_edge, rng);
-            }
         }
     }
+
+    shuffle(edges, num_edge, rng);
     
     
 
