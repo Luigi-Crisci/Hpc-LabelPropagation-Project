@@ -13,6 +13,9 @@ p_list = [0.3,0.5,0.7]
 io = open("results.log","w+")
 cflp = CFLabelPropagationFinder(100, 1234)
 
+h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_5000_300_0.300000.txt")
+x =  @elapsed(comms = our_findcommunities(h, cflp))
+
 for v in size_v
     for e in size_e
         for p in p_list
@@ -27,14 +30,7 @@ for v in size_v
     end
 end
 
+close(io)
 
-
-            
-            
-            h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_1000_80.txt")
-            
-x =  @elapsed(comms = our_findcommunities(h, cflp))
-
-x
 
 comms[:vlabels]
