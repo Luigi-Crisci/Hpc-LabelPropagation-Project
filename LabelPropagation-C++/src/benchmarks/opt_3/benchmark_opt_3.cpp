@@ -1,6 +1,7 @@
 #include "headers/label_propagation.h"
 #include <iostream>
 #include <fstream>
+#include <omp.h>
 
 #define MAXITER 100
 #define SEED 1234
@@ -60,10 +61,12 @@ int main(int argc, char *argv[]){
     nEdge = std::stoi(argv[2]);
     p = std::stof(argv[3]);
 
+    //std::cout<<"Numero max di threads: ["<<omp_get_max_threads()<<"]"<<std::endl;
+
     file_name = "../resources/h_test_hypergraph_"+std::to_string(nVertex)+"_"+std::to_string(nEdge)+"_"+std::to_string(p)+".txt";
     std::cout<<file_name<<std::endl;
 
-    std::cout << "Starting [" << argv[0] << "] with vertex [" << argv[1] << "] "<< ", with edges ["<< argv[2] << "] and density [" << argv[3] << "]" << std::endl;
+    std::cout << "Starting [" << argv[0] << "] with vertex [" << argv[1] << "] "<< " with edges ["<< argv[2] << "] density [" << argv[3] << "]" <<" num_threads ["<<omp_get_max_threads()<<"]"<< std::endl;
 
 
     HyperGraph *hypergraph = new HyperGraph(nVertex, nEdge);
