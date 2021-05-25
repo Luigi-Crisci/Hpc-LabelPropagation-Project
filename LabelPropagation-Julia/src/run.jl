@@ -16,17 +16,24 @@ cflp = CFLabelPropagationFinder(100, 1234)
 h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_5000_300_0.300000.txt")
 x =  @elapsed(comms = our_findcommunities(h, cflp))
 
+println(io,"Results with vertex [5000], with edges [300] and density [0.3]")
+println(io, "Find Communities time: $(round(x, digits=3))\n")
+close(io)
+
 for v in size_v
     for e in size_e
         for p in p_list
-            h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_$(v)_$(e)_$(p)00000.txt")
+            if isfile("../LabelPropagation-C++/resources/h_test_hypergraph_$(v)_$(e)_$(p)00000.txt") == true
+                h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_$(v)_$(e)_$(p)00000.txt")
+            end
+            
             result_files = open("results_file/results_julia_$(v)_$(e)_$(p).txt", "w+")
             #h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_5000_300_0.300000.txt")
             base = 0
             for i in 1:5
                 base += @elapsed(our_findcommunities(h, cflp))
-                write(result_files,"Results with vertex [$v], with edges [$e] and density [$p]\n")
-                write(result_files, "Find Communities time: $(base)\n")
+                println(result_files,"Results with vertex [$v], with edges [$e] and density [$p]")
+                println(result_files, "Find Communities time: $(round(base, digits=3))\n")
                 base = 0
             end
             #base /= 5 #aritmetic mean
@@ -36,7 +43,8 @@ for v in size_v
     end
 end
 
-close(io)
 
 
+
+# comms[:vlabels]
 # comms[:vlabels]
