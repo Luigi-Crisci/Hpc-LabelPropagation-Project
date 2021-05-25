@@ -55,3 +55,30 @@
 - Luigi Crisci
 - Domenico Liguori
 - Giuseppe Di Palma
+
+
+
+
+
+
+## Presentazione
+- Descrizione Task
+  - Cos'è Julia
+  - Algoritmo
+  - Task
+- Implementazione naive
+- Ottimizzazione 1
+  - Flag 03
+- Ottimizzazione 2
+  - Il problema della BFS
+  - I bitset
+    - Perchè usarli
+      - Intersezione veloce
+      - Meno memoria
+- Ottimizzazione 3
+  - Analisi parallelizzazioni effettuate
+- Risultati
+- Obiettivi
+  - Vettorializzazione shuffle
+  - Check false sharing
+  - Parallel BFS
