@@ -1,4 +1,17 @@
-# Hpc-LabelPropagation-Project
+<br/>
+<p align="center">
+    <br/>
+    <b>Optimisation Label Propagation</b>
+    <br/>
+    <b>Project of high performance computing</b>
+    <br/>
+    <b>Prof. Biagio Cosenza</b>
+    <br/>
+    <br />
+    <b>Luigi Crisci - Domenico Liguori - Giuseppe Di Palma</b>
+    <br/>
+    <br/>
+</p>
 
 ## To-do list
 
@@ -41,9 +54,3 @@
 | 3       | + optimization flags                    | 163,95s       | 4,72              | 6,66              |
 | 4       | + data structure changes & BFS on Graph | 10,63s        | 15,42             | 102,68            |
 | 5       | + OpenMP(4t)                            | 5,56s         | 1,91              | 196,32            |
-
-#### Authors
-
-- Luigi Crisci
-- Domenico Liguori
-- Giuseppe Di Palma
