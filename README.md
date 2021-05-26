@@ -1,23 +1,20 @@
 # Hpc-LabelPropagation-Project
 
-## Test
-
-### To-do list
+## To-do list
 
 - [x] Manage different code versions(release github or cmake);
 - [x] Funciton profiling
 - [ ] Optimisation of data structures;
   - [x] BFS with bitset (get_connected_component) (**OPT 2**)
   - [ ] Compute Edge and Vertex Label with bitset
-- [ ] First parallelisation with OpenMp(for) assai lazy;
+- [x] First parallelisation with OpenMp(lazy);
 - [ ] Specific parallel optimization
   - [ ] Parallel BFS
   - [ ] Array Padding (check if there is false sharing)
-- [ ] Other optimisation(ask);
-- [ ] Perform the tests;
-- [ ] Producing charts;
-  - [ ] ??????
-- [ ] Making a presentation(25 May);
+- [x] Other optimisation(ask);
+- [x] Perform the tests;
+- [x] Producing charts;
+- [x] Making a presentation(25 May);
 - [ ] Writing the report(main.tex).
 
 ### Test size
@@ -25,60 +22,28 @@
 - Small: 5000 x 300
 - Medium: 10000 x 600
 - Big: 20000 x 1200
-<!-- - Very big: 40000 x 2400 -->
 
-### Plots:
-
-- Variable size, p constant (0.3,0.5,0.7)
-- Size Large, p variable [0.2 , 0.8]
-- Parallel
-  - n° core variable, p constant (0.3,0.5,0.7)
-    - Show speedup achieved
-
-### Density of hypergraph
+#### Density(p)
 
 - 0.3
 - 0.5
 - 0.7
 
-### Test overview
+### Benchmarks
 
-- Run test on Julia
-- Run test on C++ (Naive)
+- Size: 20000 vertex, 1200 nodes
+- p: 0.5
 
-### Test Result Julia
-
-### Test Result C++
+| Version | Implementation                          | Running Time​  | Relative Speedup​  | Absolute Speedup​  |
+|---------|-----------------------------------------|---------------|-------------------|-------------------|
+| 1       | Julia                                   | 1091,54s      | 1                 | 1                 |
+| 2       | C++ Naive                               | 774,40s       | 1,41              | 1,41              |
+| 3       | + optimization flags                    | 163,95s       | 4,72              | 6,66              |
+| 4       | + data structure changes & BFS on Graph | 10,63s        | 15,42             | 102,68            |
+| 5       | + OpenMP(4t)                            | 5,56s         | 1,91              | 196,32            |
 
 #### Authors
 
 - Luigi Crisci
 - Domenico Liguori
 - Giuseppe Di Palma
-
-
-
-
-
-
-## Presentazione
-- Descrizione Task
-  - Cos'è Julia
-  - Algoritmo
-  - Task
-- Implementazione naive
-- Ottimizzazione 1
-  - Flag 03
-- Ottimizzazione 2
-  - Il problema della BFS
-  - I bitset
-    - Perchè usarli
-      - Intersezione veloce
-      - Meno memoria
-- Ottimizzazione 3
-  - Analisi parallelizzazioni effettuate
-- Risultati
-- Obiettivi
-  - Vettorializzazione shuffle
-  - Check false sharing
-  - Parallel BFS
