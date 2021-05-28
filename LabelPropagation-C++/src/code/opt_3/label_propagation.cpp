@@ -49,7 +49,7 @@ int compute_vertex_label(HyperGraph *h, int v, std::unordered_map<int, int> *vla
     if (edges_size == 0)
         return -1;
 
-    int *edges = get_vertices_indices(edges_bitset,h->nEdge);
+    int *edges = get_vertices_indices(edges_bitset, h->nEdge);
     std::unordered_map<int, int> *vertex_label_list = new std::unordered_map<int, int>;
 
     int max = 0;
@@ -97,7 +97,7 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     if (vertices_size == 0)
         return -1;
 
-    int *vertices = get_vertices_indices(vertices_bitset,h->nVertex);
+    int *vertices = get_vertices_indices(vertices_bitset, h->nVertex);
 
     int max = 0, current_label, current_vertex, current_index;
 
@@ -136,7 +136,6 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     return *(max_edge_label_found->begin());
 }
 
-
 //TODO:: non sono sicuro che la parallelizzazione funziona
 int bfs(HyperGraph *h, int e)
 {
@@ -150,22 +149,22 @@ int bfs(HyperGraph *h, int e)
     int current = -1, count = 0;
     while (!frontier.empty())
     {
-        current = frontier.front();//TODO:: usare indice array per simulare la coda così da poter parallelizzare?
+        current = frontier.front(); //TODO:: usare indice array per simulare la coda così da poter parallelizzare?
         frontier.pop();
 
-        #pragma omp parallel for firstprivate(current, graph_size)
+#pragma omp parallel for firstprivate(current, graph_size)
         for (int i = 0; i < graph_size; i++)
         {
             bool connected = graph[current][i];
             bool c = !checked[i];
             if (graph[current][i] && !checked[i])
             {
-                #pragma omp critical
+#pragma omp critical
                 {
                     checked[i] = true;
                     frontier.push(i);
                     count++;
-                } 
+                }
             }
         }
     }
@@ -197,70 +196,72 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     int *edges = (int *)calloc(num_edge, sizeof(int));
 
     // std::cout<<"Numero max di threads: ["<<omp_get_max_threads()<<"]"<<std::endl;
-    
-    if(num_vertex > num_edge){
-        #pragma omp parallel
+
+    if (num_vertex > num_edge)
+    {
+#pragma omp parallel
         {
-            #pragma omp single nowait
+#pragma omp single nowait
             {
                 for (int i = 0; i < num_vertex; i++)
                 {
                     vertices[i] = i;
                     vLabel->insert({i, i});
-                    if(i<num_edge){
+                    if (i < num_edge)
+                    {
                         heLabels->insert({i, -1});
                         edges[i] = i;
-                    } 
+                    }
                 }
             }
-            #pragma omp single nowait
+#pragma omp single nowait
             {
 #ifdef DEBUG
-            std::chrono::steady_clock::time_point start;
-            start = std::chrono::steady_clock::now();
+                std::chrono::steady_clock::time_point start;
+                start = std::chrono::steady_clock::now();
 #endif // DEBUG
                 assert(is_hypergraph_connected(h));
 
 #ifdef DEBUG
-            std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
-            start = std::chrono::steady_clock::now();
+                std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
+                start = std::chrono::steady_clock::now();
 #endif // DEBUG
-            }   
-                
+            }
         }
-    }else{
-        #pragma omp parallel
+    }
+    else
+    {
+#pragma omp parallel
         {
-            #pragma omp single nowait
+#pragma omp single nowait
             {
                 for (int i = 0; i < num_edge; i++)
                 {
                     heLabels->insert({i, -1});
                     edges[i] = i;
-                    if(i<num_vertex){
+                    if (i < num_vertex)
+                    {
                         vertices[i] = i;
-                        vLabel->insert({i, i}); 
-                    } 
+                        vLabel->insert({i, i});
+                    }
                 }
             }
-            #pragma omp single nowait
+#pragma omp single nowait
             {
 #ifdef DEBUG
-            std::chrono::steady_clock::time_point start;
-            start = std::chrono::steady_clock::now();
+                std::chrono::steady_clock::time_point start;
+                start = std::chrono::steady_clock::now();
 #endif // DEBUG
                 assert(is_hypergraph_connected(h));
 
 #ifdef DEBUG
-            std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
+                std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
 #endif // DEBUG
             }
         }
     }
 
     shuffle(edges, num_edge, rng);
-    
-    
 
 #ifdef DEBUG
     std::chrono::steady_clock::time_point start;
@@ -270,9 +271,9 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     {
         stop = true;
 
-        #pragma omp parallel
+#pragma omp parallel
         {
-            #pragma omp for private(current_edge) nowait
+#pragma omp for private(current_edge) nowait
             for (int i = 0; i < num_edge; i++)
             {
                 current_edge = edges[i];
@@ -280,13 +281,12 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
                     (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
             }
 
-            #pragma omp single 
+#pragma omp single
             {
                 shuffle(vertices, num_vertex, rng);
             }
 
-
-            #pragma omp for private(new_label, current_vertex) nowait
+#pragma omp for private(new_label, current_vertex) nowait
             for (int i = 0; i < num_vertex; i++)
             {
                 current_vertex = vertices[i];
@@ -298,12 +298,11 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
                 (*vLabel)[current_vertex] = new_label;
             }
 
-            #pragma omp single 
+#pragma omp single
             {
-                 shuffle(edges, num_edge, rng);
+                shuffle(edges, num_edge, rng);
             }
         }
-
     }
 
 #ifdef DEBUG

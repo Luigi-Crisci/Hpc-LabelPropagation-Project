@@ -20,4 +20,4 @@ target_include_directories(label_propagation_opt4
   )
 
 # set(CMAKE_CXX_FLAGS "-O3")
-set(CMAKE_CXX_FLAGS " -DDEBUG -g")
+set(CMAKE_CXX_FLAGS "-O3 -DDEBUG -g ")

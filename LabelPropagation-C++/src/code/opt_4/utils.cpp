@@ -73,3 +73,7 @@ bool **hypergraph_to_graph(HyperGraph *h)
 
     return matrix;
 }
+
+inline int next_multiple(int n, int base){
+    return n + (base - n % base);
+}

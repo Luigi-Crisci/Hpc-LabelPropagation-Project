@@ -4,22 +4,15 @@
 
 int main(){
 	
-	int size = 1000000000;
-	int *vet = (int*) calloc(size,sizeof(int*));
+	int sum = 0;
 
-	// #pragma omp simd
-	// {	
-		for (int i = 0; i < size; i++)
-		{
-			vet[i] = i;
-		}
-	// }
+	#pragma omp parallel for reduction(+:sum)
+	for (int i = 0; i < 100000; i++)
+	{
+		sum += 1;
+	}
 
-	// for (int i = 0; i < size; i++)
-	// {
-	// 	std::cout<<vet[i]<<" ";
-	// }
-	// std::cout<<std::endl;
-	free(vet);
-	return 0;
+	std::cout<<sum<<std::endl;	
+
+	exit(0);
 }

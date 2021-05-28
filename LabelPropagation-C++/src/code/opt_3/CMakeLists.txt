@@ -18,6 +18,5 @@ target_include_directories(label_propagation_opt3
     ${CMAKE_CURRENT_LIST_DIR}
   )
 
-set(CMAKE_CXX_FLAGS "-O3")
 
-set(CMAKE_CXX_FLAGS "-DDEBUG")
+set(CMAKE_CXX_FLAGS "-O3 -DDEBUG")
