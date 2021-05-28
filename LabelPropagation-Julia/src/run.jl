@@ -6,14 +6,14 @@ include("read_hypergraph.jl")
 ### Write code here
 Random.seed!(1234);
 
-size_v = [5000,10000,20000]
-size_e = [300,600,1200]
-p_list = [0.3,0.5,0.7]
+size_v = [100, 5000,10000,20000]
+size_e = [20, 300,600,1200]
+p_list = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
 
 io = open("results.log","w+")
 cflp = CFLabelPropagationFinder(100, 1234)
 
-h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_5000_300_0.300000.txt")
+h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_10000_600_0.800000.txt")
 x =  @elapsed(comms = our_findcommunities(h, cflp))
 
 println(io,"Results with vertex [5000], with edges [300] and density [0.3]")
@@ -25,9 +25,9 @@ for v in size_v
         for p in p_list
             if isfile("../LabelPropagation-C++/resources/h_test_hypergraph_$(v)_$(e)_$(p)00000.txt") == true
                 h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_$(v)_$(e)_$(p)00000.txt")
+                result_files = open("results_file/results_julia_$(v)_$(e)_$(p).txt", "w+")
             end
             
-            result_files = open("results_file/results_julia_$(v)_$(e)_$(p).txt", "w+")
             #h = read_hypergraph("../LabelPropagation-C++/resources/h_test_hypergraph_5000_300_0.300000.txt")
             base = 0
             for i in 1:5
