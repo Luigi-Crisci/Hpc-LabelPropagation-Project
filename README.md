@@ -3,6 +3,10 @@
     <br/>
     <b>Optimisation Label Propagation</b>
     <br/>
+    <b>Department of Computer Science</b>
+    <br/>
+    <b>University of Salerno</b>
+    <br/>
     <b>Project of high performance computing</b>
     <br/>
     <b>Prof. Biagio Cosenza</b>
@@ -17,13 +21,13 @@
 
 - [x] Manage different code versions(release github or cmake);
 - [x] Funciton profiling
-- [ ] Optimisation of data structures;
+- [x] Optimisation of data structures;
   - [x] BFS with bitset (get_connected_component) (**OPT 2**)
-  - [ ] Compute Edge and Vertex Label with bitset
+  - [x] Compute Edge and Vertex Label with bitset
 - [x] First parallelisation with OpenMp(lazy);
-- [ ] Specific parallel optimization
-  - [ ] Parallel BFS
-  - [ ] Array Padding (check if there is false sharing)
+- [x] Specific parallel optimization
+  - [x] Parallel BFS
+  - [x] Array Padding (check if there is false sharing)
 - [x] Other optimisation(ask);
 - [x] Perform the tests;
 - [x] Producing charts;
@@ -47,10 +51,11 @@
 - Size: 20000 vertex, 1200 nodes
 - p: 0.5
 
-| Version | Implementation                          | Running Time​  | Relative Speedup​  | Absolute Speedup​  |
+| Version | Implementation                          | Running Time  | Relative Speedup | Absolute Speedup|
 |---------|-----------------------------------------|---------------|-------------------|-------------------|
 | 1       | Julia                                   | 1091,54s      | 1                 | 1                 |
 | 2       | C++ Naive                               | 774,40s       | 1,41              | 1,41              |
 | 3       | + optimization flags                    | 163,95s       | 4,72              | 6,66              |
 | 4       | + data structure changes & BFS on Graph | 10,63s        | 15,42             | 102,68            |
 | 5       | + OpenMP(4t)                            | 5,56s         | 1,91              | 196,32            |
+| 6       | + padding alignement                    | 5,89s         | 0.94              | 185,32            |
