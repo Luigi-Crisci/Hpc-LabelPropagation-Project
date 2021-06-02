@@ -213,7 +213,7 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 {
     MT::MersenneTwist rng;
     rng.init_genrand(parameters.seed);
-    
+
     int num_edge = h->nEdge;
     int num_vertex = h->nVertex;
     int new_label;
@@ -224,10 +224,10 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     int vLabel_size = next_multiple(num_vertex, CACHE_LINE_SIZE);
     int heLabel_size = next_multiple(num_edge, CACHE_LINE_SIZE);
 
-    int *vLabel = (int *)calloc(vLabel_size, sizeof(int));
-    int *ordered_vLabel = (int *)calloc(vLabel_size, sizeof(int));
-    int *heLabels = (int *)calloc(heLabel_size, sizeof(int));
-    int *ordered_heLabels = (int *)calloc(heLabel_size, sizeof(int));
+    int *vLabel = (int *) std::aligned_alloc(CACHE_LINE_SIZE, vLabel_size * sizeof(int));
+    int *ordered_vLabel = (int *) std::aligned_alloc(CACHE_LINE_SIZE, vLabel_size * sizeof(int));
+    int *heLabels = (int *) std::aligned_alloc(CACHE_LINE_SIZE, heLabel_size * sizeof(int));
+    int *ordered_heLabels = (int *) std::aligned_alloc(CACHE_LINE_SIZE, heLabel_size * sizeof(int));
 
     int *vertices = (int *)calloc(num_vertex, sizeof(int));
     int *edges = (int *)calloc(num_edge, sizeof(int));
@@ -237,9 +237,9 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     for (int i = 0; i < num_edge; i++)
         edges[i] = i;
 
-    #pragma omp parallel
+#pragma omp parallel
     {
-        #pragma omp for nowait
+#pragma omp for nowait
         for (int i = 0; i < vLabel_size; i++)
         {
             if (i < num_vertex)
@@ -249,7 +249,7 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
             }
         }
 
-        #pragma omp for nowait
+#pragma omp for nowait
         for (int i = 0; i < heLabel_size; i++)
         {
             if (i < num_edge)
@@ -259,7 +259,7 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
             }
         }
 
-        #pragma omp single
+#pragma omp single
         {
 #ifdef DEBUG
             std::chrono::steady_clock::time_point start;
@@ -277,18 +277,18 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 #ifdef DEBUG
     std::chrono::steady_clock::time_point start;
     start = std::chrono::steady_clock::now();
-#endif 
+#endif
     for (current_iter = 1; !stop && current_iter < parameters.max_iter; current_iter++)
     {
         stop = true;
 
 #pragma omp parallel
         {
-            #pragma omp single
+#pragma omp single
             {
                 shuffle(edges, heLabels, num_edge, rng);
             }
-            
+
 #pragma omp for
             for (int i = 0; i < heLabel_size; i++)
             {
