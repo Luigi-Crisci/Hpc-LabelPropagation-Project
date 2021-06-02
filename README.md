@@ -1,13 +1,13 @@
 <br/>
 <p align="center">
     <br/>
-    <b>Optimisation Label Propagation</b>
+    <b>Optimisation Find communities</b>
     <br/>
     <b>Department of Computer Science</b>
     <br/>
-    <b>University of Salerno</b>
-    <br/>
     <b>Project of high performance computing</b>
+    <br/>
+    <b>University of Salerno</b>
     <br/>
     <b>Prof. Biagio Cosenza</b>
     <br/>
