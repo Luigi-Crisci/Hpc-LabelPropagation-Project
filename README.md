@@ -1,9 +1,13 @@
 <br/>
 <p align="center">
     <br/>
-    <b>Optimisation Label Propagation</b>
+    <b>Optimisation Find communities</b>
+    <br/>
+    <b>Department of Computer Science</b>
     <br/>
     <b>Project of high performance computing</b>
+    <br/>
+    <b>University of Salerno</b>
     <br/>
     <b>Prof. Biagio Cosenza</b>
     <br/>
@@ -87,7 +91,7 @@ We ran various benchmarks with different file sizes and densities. Below are the
 
 - Size: 20000 vertex, 1200 nodes, p: 0.5
 
-| Version | Implementation                          | Running Time​  | Relative Speedup​  | Absolute Speedup​  |
+| Version | Implementation                          | Running Time  | Relative Speedup | Absolute Speedup|
 |---------|-----------------------------------------|---------------|-------------------|-------------------|
 | 1       | Julia                                   | 1091,54s      | 1                 | 1                 |
 | 2       | C++ Naive                               | 774,40s       | 1,41              | 1,41              |
