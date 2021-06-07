@@ -4,7 +4,6 @@ LabelPropagation-C++/build/run.sh
 Manifest.toml
 .vscode/
 .vscode/settings.json
-LabelPropagation-C++/resources
 a.out
 a.exe
 LabelPropagation-Julia/results_file
