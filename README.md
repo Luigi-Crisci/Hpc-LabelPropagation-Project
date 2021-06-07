@@ -29,6 +29,19 @@ Optimise find community in the label propagation package written in Julia.
 
 #### How to use
 
+##### Julia
+
+To run the julia code as a script:
+
+```bash
+$ julia add_dependencies.jl
+
+$ julia run.jl <vertex_num> <edge_num> <density_prob> 
+```
+and the result will be printed on standard output.
+
+##### C++
+
 ```bash
 $ git clone https://github.com/Luigi-Crisci/Hpc-LabelPropagation-Project.git 
 
