@@ -121,15 +121,15 @@ We ran various benchmarks with different file sizes and densities. Below are the
 
 - [x] Manage different code versions(release github or cmake);
 - [x] Funciton profiling
-- [ ] Optimisation of data structures;
+- [x] Optimisation of data structures;
   - [x] BFS with bitset (get_connected_component) (**OPT 2**)
-  - [ ] Compute Edge and Vertex Label with bitset
+  - [x] Compute Edge and Vertex Label with bitset
 - [x] First parallelisation with OpenMp(lazy);
-- [ ] Specific parallel optimization
-  - [ ] Parallel BFS
-  - [ ] Array Padding (check if there is false sharing)
+- [x] Specific parallel optimization
+  - [x] Parallel BFS
+  - [x] Array Padding (check if there is false sharing)
 - [x] Other optimisation(ask);
 - [x] Perform the tests;
 - [x] Producing charts;
 - [x] Making a presentation(25 May);
-- [ ] Writing the report(main.tex).
+- [x] Writing the report(main.tex).
