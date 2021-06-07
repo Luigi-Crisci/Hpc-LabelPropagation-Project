@@ -45,7 +45,7 @@ and the result will be printed on standard output.
 ```bash
 $ git clone https://github.com/Luigi-Crisci/Hpc-LabelPropagation-Project.git 
 
-$ cd Hpc-LabelPropagation-Project/LabelPropagation-C++/build/
+$ cd Hpc-LabelPropagation-Project/LabelPropagation-C++
 
 $ ./compile.sh
 ```
@@ -53,6 +53,7 @@ $ ./compile.sh
 ##### Create file for test
 
 In `build` directory run:
+
 ```bash
 $ bin/create_h
 
@@ -68,10 +69,6 @@ $ bin/create_h
 Usage: 
         bin/create_h 1200 600 0.5
 ```
-
-These files will be created in the `$ cd ../resources/`
-
-*(If this directory does not exist, it must be created before run)*
 
 ##### Run
 
@@ -96,6 +93,13 @@ $ bin/benchmark_opt_4
 
 ```bash
 export OMP_NUM_THREADS=4
+```
+
+Example:
+
+```bash
+Usage: 
+        bin/benchmark_opt_1 20000 1200 0.5
 ```
 
 ### Benchmarks
