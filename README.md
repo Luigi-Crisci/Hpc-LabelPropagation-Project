@@ -26,9 +26,18 @@ Optimise find community in the label propagation package written in Julia.
 - Clang++-11
 - Cmake 3.16.3
 - OpenMP 5.0
+- Pdflatex (doc)
 
 #### How to use
 
+##### Documentation
+
+You can find documentation about the project under the *documentation* folder. It is written in latex, so you'll need to compile it first.  
+We also provided a simple script to do it, just type:
+```bash
+$ bash compile.sh
+```
+and a file named *main.pdf* will be placed in the same directory.
 ##### Julia
 
 To run the julia code as a script:
@@ -126,11 +135,10 @@ We ran various benchmarks with different file sizes and densities. Below are the
 - [x] Optimisation of data structures;
   - [x] BFS with bitset (get_connected_component) (**OPT 2**)
   - [x] Compute Edge and Vertex Label with bitset
-- [x] First parallelisation with OpenMp(lazy);
+- [x] First parallelisation with OpenMp;
 - [x] Specific parallel optimization
-  - [x] Parallel BFS
   - [x] Array Padding (check if there is false sharing)
-- [x] Other optimisation(ask);
+- [x] Other optimisation;
 - [x] Perform the tests;
 - [x] Producing charts;
 - [x] Making a presentation(25 May);

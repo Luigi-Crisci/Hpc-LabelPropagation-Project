@@ -8,3 +8,9 @@ a.out
 a.exe
 LabelPropagation-Julia/results_file
 LabelPropagation-Julia/results.log
+*.log
+*.aux
+*.fls
+*.fdb_latexmk
+*.out
+*.zip
