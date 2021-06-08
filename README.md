@@ -52,6 +52,8 @@ $ ./compile.sh
 
 ##### Create file for test
 
+In the `cd /resources` folder there are files ready for testing. But if you want to create other file types:
+
 In `build` directory run:
 
 ```bash
