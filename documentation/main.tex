@@ -33,8 +33,8 @@
 \maketitle
 
 \begin{abstract}
-We optimize a sequential version of a Find Communities algorithm, written in Julia, by porting it to C++ and introducing parallelism to gain performance from multicore processors. Because of importance of finding communities in graphs, and due to the size of real world network, exploit maximum performance from current systems is required.
-We optimize our solutions in various steps and show a notable performance improvement.
+The SimpleHypergraphs.jl is a library for Hypergraph computation written in Julia, providing a collection of data structure and algorithm. Between the latter, the \textit{Find Communities} algorithm is especially interesting for its time complexity, but suffers from not optimal data structure design and no parallelism that lead to poor performance and scalability on nowadays systems.  
+In this paper we presented an approach for optimize a sequential version of the Find Communities algorithm, by porting it to C++ and introducing parallelism to gain performance from multicore processors. We optimized our solutions in an incremental way, showing the approach we used step-by-step. Our experiment measured the performance of every step of our work against the original implementation, showing that our solutions is notably faster than the base one.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -51,7 +51,7 @@ Although, achieve good performance when working with Hypergraphs is a major chal
 In this paper, we optimize the Find Communities algorithm on Hypergraphs proposed by Antelmi \cite{SimpleHypergraphs}. Starting from a sequential implementation in Julia, we redefine the data organization and introduce fine grained parallelism using \textit{OpenMP}, then we compare our work with the base implementation.
 
 \mypar{Related work} 
-The Julia implementation is part of the SimpleHypergraphs.jl library \cite{SH.jl}.
+The Julia implementation is part of the SimpleHypergraphs.jl library \cite{SH.jl}. A collection of parallel algorithm especially designed for Hypergraphs is presented here \cite{parallel_alg}. HyperX \cite{HYPERX} and MESH \cite{MESH} are the only existing high-level programming frameworks for hypergraph processing, built for distributed memory on top of the Spark framework. A first GPU approach in algorithm design for Hypergraphs is presented in \cite{gpu_alg}, implemented for a special case of k-core decomposition.
 
 \section{Background}\label{sec:background}
 
@@ -446,6 +446,21 @@ USA 99, 7821–7826 (2002)
 \bibitem{community_web}
 G. W. Flake, S. R. Lawrence, C. L. Giles, and F. M. Coetzee, Self-organization and identification of Web communities. IEEE Computer 35, 66–71 (2002)
 
+\bibitem{parallel_alg}
+Julian Shun. 2020. Practical parallel hypergraph algorithms. In Proceedings of the 25th ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming (PPoPP '20). Association for Computing Machinery, New York, NY, USA, 232–249.
+
+\bibitem{MESH}
+Benjamin Heintz, Rankyung Hong, Shivangi Singh, Gaurav Khandelwal, Corey Tesdahl, and Abhishek Chandra. 2019. MESH: A Flexible
+Distributed Hypergraph Processing System. In IEEE International
+Conference on Cloud Engineering (IC2E). 12–22.
+
+\bibitem{HYPERX}
+W. Jiang, J. Qi, J. X. Yu, J. Huang, and R. Zhang. 2019. HyperX: A
+Scalable Hypergraph Framework. IEEE Transactions on Knowledge
+and Data Engineering 31, 5, 909–922.
+
+\bibitem{gpu_alg}
+Jiayang Jiang, Michael Mitzenmacher, and Justin Thaler. 2017. Parallel Peeling Algorithms. ACM Trans. Parallel Comput. 3, 1, Article 7 (Jan. 2017), 7:1–7:27 pages.
 
 \end{thebibliography}
 
