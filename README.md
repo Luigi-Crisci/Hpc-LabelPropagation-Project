@@ -1,7 +1,7 @@
 <br/>
 <p align="center">
     <br/>
-    <b>Optimisation Find communities</b>
+    <b>Optimize Find communities</b>
     <br/>
     <b>Department of Computer Science</b>
     <br/>
