@@ -5,7 +5,7 @@
 #define CACHE_LINE_SIZE 64
 // #define THREAD_INDEX(i, thread_num) i + thread_num *CACHE_LINE_SIZE
 
-void shuffle(int *element, int size, MT::MersenneTwist rng)
+void shuffle(int* element, int size, MT::MersenneTwist rng)
 {
     if (size > 1)
     {
@@ -21,7 +21,7 @@ void shuffle(int *element, int size, MT::MersenneTwist rng)
     }
 }
 
-void shuffle(int *element, int *labels, int size, MT::MersenneTwist rng)
+void shuffle(int* element, int* labels, int size, MT::MersenneTwist rng)
 {
     if (size > 1)
     {
@@ -41,15 +41,15 @@ void shuffle(int *element, int *labels, int size, MT::MersenneTwist rng)
     }
 }
 
-inline void update_ordered_labels(int *labels, int *ordered_labes, int *vertex_indices, int size)
+inline void update_ordered_labels(int* labels, int* ordered_labes, int* vertex_indices, int size)
 {
     for (int i = 0; i < size; i++)
         ordered_labes[vertex_indices[i]] = labels[i];
 }
 
-std::unordered_map<int, std::unordered_set<int> *> *reverse_map(int *vet, int size)
+std::unordered_map<int, std::unordered_set<int>*>* reverse_map(int* vet, int size)
 {
-    std::unordered_map<int, std::unordered_set<int> *> *values_label_set = new std::unordered_map<int, std::unordered_set<int> *>;
+    std::unordered_map<int, std::unordered_set<int>*>* values_label_set = new std::unordered_map<int, std::unordered_set<int>*>;
     for (int i = 0; i < size; i++)
     {
 
@@ -60,27 +60,27 @@ std::unordered_map<int, std::unordered_set<int> *> *reverse_map(int *vet, int si
             values_label_set->at(value)->insert(key);
         else
         {
-            std::unordered_set<int> *new_label_set = new std::unordered_set<int>; // this mem is not freed
+            std::unordered_set<int>* new_label_set = new std::unordered_set<int>; // this mem is not freed
             new_label_set->insert(key);
-            values_label_set->insert({value, new_label_set});
+            values_label_set->insert({ value, new_label_set });
         }
     }
 
     return values_label_set;
 }
 
-int compute_vertex_label(HyperGraph *h, int v, int *vlabel, int *heLables, MT::MersenneTwist rng)
+int compute_vertex_label(HyperGraph* h, int v, int* vlabel, int* heLables, MT::MersenneTwist rng)
 {
-    std::bitset<MAX_SIZE> *edges_bitset = GET_EDGES(h, v);
+    std::bitset<MAX_SIZE>* edges_bitset = GET_EDGES(h, v);
     int edges_size = edges_bitset->count();
 
     if (edges_size == 0)
         return -1;
 
-    int *edges = get_vertices_indices(edges_bitset, h->nEdge);
+    int* edges = get_vertices_indices(edges_bitset, h->nEdge);
 
-    std::unordered_map<int, int> *vertex_label_list = new std::unordered_map<int, int>;
-    std::unordered_set<int> *max_vertex_label_found = new std::unordered_set<int>;
+    std::unordered_map<int, int>* vertex_label_list = new std::unordered_map<int, int>;
+    std::unordered_set<int>* max_vertex_label_found = new std::unordered_set<int>;
 
     int max = 0;
     int current_label, current_edge;
@@ -96,7 +96,7 @@ int compute_vertex_label(HyperGraph *h, int v, int *vlabel, int *heLables, MT::M
         if (vertex_label_list->count(current_label) == 1)
             (*vertex_label_list)[current_label] = vertex_label_list->at(current_label) + 1;
         else
-            vertex_label_list->insert({current_label, 1});
+            vertex_label_list->insert({ current_label, 1 });
 
         if (vertex_label_list->at(current_label) == max)
             max_vertex_label_found->insert(current_label);
@@ -116,20 +116,20 @@ int compute_vertex_label(HyperGraph *h, int v, int *vlabel, int *heLables, MT::M
     return *(max_vertex_label_found->begin());
 }
 
-int compute_edge_label(HyperGraph *h, int e, int *vlabel, int *heLables, MT::MersenneTwist rng)
+int compute_edge_label(HyperGraph* h, int e, int* vlabel, int* heLables, MT::MersenneTwist rng)
 {
-    std::bitset<MAX_SIZE> *vertices_bitset = GET_VERTICES(h, e);
+    std::bitset<MAX_SIZE>* vertices_bitset = GET_VERTICES(h, e);
     int vertices_size = vertices_bitset->count();
 
     if (vertices_size == 0)
         return -1;
 
-    int *vertices = get_vertices_indices(vertices_bitset, h->nVertex);
+    int* vertices = get_vertices_indices(vertices_bitset, h->nVertex);
 
     int max = 0, current_label, current_vertex, current_index;
 
-    std::unordered_map<int, int> *edge_label_list = new std::unordered_map<int, int>;
-    std::unordered_set<int> *max_edge_label_found = new std::unordered_set<int>; //this is not freed
+    std::unordered_map<int, int>* edge_label_list = new std::unordered_map<int, int>;
+    std::unordered_set<int>* max_edge_label_found = new std::unordered_set<int>; //this is not freed
 
     shuffle(vertices, vertices_size, rng);
 
@@ -141,7 +141,7 @@ int compute_edge_label(HyperGraph *h, int e, int *vlabel, int *heLables, MT::Mer
         if (edge_label_list->count(current_label) == 1)
             (*edge_label_list)[current_label] = edge_label_list->at(current_label) + 1;
         else
-            edge_label_list->insert({current_label, 1});
+            edge_label_list->insert({ current_label, 1 });
 
         if (edge_label_list->at(current_label) == max)
         {
@@ -167,9 +167,9 @@ int compute_edge_label(HyperGraph *h, int e, int *vlabel, int *heLables, MT::Mer
 }
 
 //TODO:: non sono sicuro che la parallelizzazione funziona
-int bfs(HyperGraph *h, int e)
+int bfs(HyperGraph* h, int e)
 {
-    bool **graph = hypergraph_to_graph(h);
+    bool** graph = hypergraph_to_graph(h);
     size_t graph_size = h->nEdge;
 
     std::queue<int> frontier;
@@ -204,12 +204,12 @@ int bfs(HyperGraph *h, int e)
     return count;
 }
 
-bool is_hypergraph_connected(HyperGraph *h)
+bool is_hypergraph_connected(HyperGraph* h)
 {
     return bfs(h, 0) == h->nEdge;
 }
 
-find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinder parameters)
+find_communities_struct* find_communities(HyperGraph* h, CFLabelPropagationFinder parameters)
 {
     MT::MersenneTwist rng;
     rng.init_genrand(parameters.seed);
@@ -224,18 +224,16 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     int vLabel_size = next_multiple(num_vertex, CACHE_LINE_SIZE);
     int heLabel_size = next_multiple(num_edge, CACHE_LINE_SIZE);
 
-    int *vLabel = (int *) std::aligned_alloc(CACHE_LINE_SIZE, vLabel_size * sizeof(int));
-    int *ordered_vLabel = (int *) std::aligned_alloc(CACHE_LINE_SIZE, vLabel_size * sizeof(int));
-    int *heLabels = (int *) std::aligned_alloc(CACHE_LINE_SIZE, heLabel_size * sizeof(int));
-    int *ordered_heLabels = (int *) std::aligned_alloc(CACHE_LINE_SIZE, heLabel_size * sizeof(int));
+    int* vLabel = (int*)aligned_alloc(CACHE_LINE_SIZE, vLabel_size * sizeof(int));
+    int* ordered_vLabel = (int*)aligned_alloc(CACHE_LINE_SIZE, vLabel_size * sizeof(int));
+    int* heLabels = (int*)aligned_alloc(CACHE_LINE_SIZE, heLabel_size * sizeof(int));
+    int* ordered_heLabels = (int*)aligned_alloc(CACHE_LINE_SIZE, heLabel_size * sizeof(int));
 
-    int *vertices = (int *)calloc(num_vertex, sizeof(int));
-    int *edges = (int *)calloc(num_edge, sizeof(int));
+    int* vertices = (int*)calloc(num_vertex, sizeof(int));
+    int* edges = (int*)calloc(num_edge, sizeof(int));
 
-    for (int i = 0; i < num_vertex; i++)
-        vertices[i] = i;
-    for (int i = 0; i < num_edge; i++)
-        edges[i] = i;
+    std::iota(vertices, vertices + num_vertex, 0);
+    std::iota(edges, edges + num_edge, 0);
 
 #pragma omp parallel
     {
@@ -336,16 +334,16 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
     //TODO: reverse map parallel???
     //Get sets of Vertices lables
-    std::unordered_map<int, std::unordered_set<int> *> *vertices_label_set = reverse_map(vLabel, num_vertex);
+    std::unordered_map<int, std::unordered_set<int>*>* vertices_label_set = reverse_map(vLabel, num_vertex);
     //Get sets of Edges lables
-    std::unordered_map<int, std::unordered_set<int> *> *edges_label_set = reverse_map(heLabels, num_edge);
+    std::unordered_map<int, std::unordered_set<int>*>* edges_label_set = reverse_map(heLabels, num_edge);
 
     //Collapse all vertives sets into a global set
-    std::unordered_set<std::unordered_set<int> *> *vertices_sets = new std::unordered_set<std::unordered_set<int> *>(vertices_label_set->size());
-    std::unordered_set<std::unordered_set<int> *> *edges_set = new std::unordered_set<std::unordered_set<int> *>(edges_label_set->size());
+    std::unordered_set<std::unordered_set<int>*>* vertices_sets = new std::unordered_set<std::unordered_set<int>*>(vertices_label_set->size());
+    std::unordered_set<std::unordered_set<int>*>* edges_set = new std::unordered_set<std::unordered_set<int>*>(edges_label_set->size());
 
-    int *vertices_labels = (int *)calloc(num_vertex, sizeof(int));
-    int *edges_labels = (int *)calloc(num_edge, sizeof(int));
+    int* vertices_labels = (int*)calloc(num_vertex, sizeof(int));
+    int* edges_labels = (int*)calloc(num_edge, sizeof(int));
 
     //TODO questa regione ha inserimenti quindi la parallelizzazione non è banale
     for (auto it = vertices_label_set->begin(); it != vertices_label_set->end(); it++)

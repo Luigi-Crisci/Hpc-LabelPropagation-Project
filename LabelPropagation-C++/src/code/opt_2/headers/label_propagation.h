@@ -1,3 +1,5 @@
+#pragma once 
+
 #include <map>
 #include <unordered_set>
 #include <unordered_map>
@@ -34,7 +36,7 @@ typedef struct CFLabelPropagationFinder
 /*
     Hyper-graph structure
 */
-typedef struct HyperGraph
+struct HyperGraph
 {
     int nVertex, nEdge;
     std::bitset<MAX_SIZE> *v2he, *he2v;
@@ -45,15 +47,20 @@ typedef struct HyperGraph
         this->nEdge = nEdge;
         v2he = (std::bitset<MAX_SIZE> *)calloc(nVertex, sizeof(std::bitset<MAX_SIZE>));
         he2v = (std::bitset<MAX_SIZE> *)calloc(nEdge, sizeof(std::bitset<MAX_SIZE>));
-
-        //TODO: Should this be pointers?
-        // for (int i = 0; i < nVertex; i++)
-        //     (*v2he)[i] = new std::bitset<nEdge>();
-        // for (int i = 0; i < nEdge; i++)
-        //     he2v[i] = new std::map<int, bool>;
     }
 
-} HyperGraph;
+    ~HyperGraph()
+    {
+        free(v2he);
+        free(he2v);
+    }
+
+    void add_vertex_to_edge(int v, int e)
+    {
+        v2he[v].set(e);
+        he2v[e].set(v);
+    }
+};
 
 typedef struct find_communities_struct
 {

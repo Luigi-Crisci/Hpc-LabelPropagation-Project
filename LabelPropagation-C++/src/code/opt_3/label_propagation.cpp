@@ -136,7 +136,6 @@ int compute_edge_label(HyperGraph *h, int e, std::unordered_map<int, int> *vlabe
     return *(max_edge_label_found->begin());
 }
 
-//TODO:: non sono sicuro che la parallelizzazione funziona
 int bfs(HyperGraph *h, int e)
 {
     bool **graph = hypergraph_to_graph(h);
@@ -199,9 +198,9 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
 
     if (num_vertex > num_edge)
     {
-#pragma omp parallel
+        #pragma omp parallel
         {
-#pragma omp single nowait
+            #pragma omp single nowait
             {
                 for (int i = 0; i < num_vertex; i++)
                 {
@@ -214,26 +213,28 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
                     }
                 }
             }
-#pragma omp single nowait
+            
+            #pragma omp single nowait
             {
-#ifdef DEBUG
+                #ifdef DEBUG
                 std::chrono::steady_clock::time_point start;
                 start = std::chrono::steady_clock::now();
-#endif // DEBUG
+                #endif // DEBUG
+                
                 assert(is_hypergraph_connected(h));
 
-#ifdef DEBUG
+                #ifdef DEBUG
                 std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
                 start = std::chrono::steady_clock::now();
-#endif // DEBUG
+                #endif // DEBUG
             }
         }
     }
     else
     {
-#pragma omp parallel
+        #pragma omp parallel
         {
-#pragma omp single nowait
+            #pragma omp single nowait
             {
                 for (int i = 0; i < num_edge; i++)
                 {
@@ -246,34 +247,33 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
                     }
                 }
             }
-#pragma omp single nowait
+            #pragma omp single nowait
             {
-#ifdef DEBUG
+                #ifdef DEBUG
                 std::chrono::steady_clock::time_point start;
                 start = std::chrono::steady_clock::now();
-#endif // DEBUG
+                #endif // DEBUG
                 assert(is_hypergraph_connected(h));
 
-#ifdef DEBUG
+                #ifdef DEBUG
                 std::cout << "Time Is_Hypergraph connected: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
-#endif // DEBUG
+                #endif // DEBUG
             }
         }
     }
 
     shuffle(edges, num_edge, rng);
 
-#ifdef DEBUG
+    #ifdef DEBUG
     std::chrono::steady_clock::time_point start;
     start = std::chrono::steady_clock::now();
-#endif // DEBUG
+    #endif // DEBUG
     for (current_iter = 1; !stop && current_iter < parameters.max_iter; current_iter++)
     {
         stop = true;
-
-#pragma omp parallel
+        #pragma omp parallel
         {
-#pragma omp for private(current_edge) nowait
+            #pragma omp for private(current_edge) nowait schedule(dynamic)
             for (int i = 0; i < num_edge; i++)
             {
                 current_edge = edges[i];
@@ -281,12 +281,12 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
                     (*heLabels)[current_edge] = compute_edge_label(h, current_edge, vLabel, heLabels, rng);
             }
 
-#pragma omp single
+            #pragma omp single
             {
                 shuffle(vertices, num_vertex, rng);
             }
 
-#pragma omp for private(new_label, current_vertex) nowait
+            #pragma omp for private(new_label, current_vertex) nowait schedule(dynamic)
             for (int i = 0; i < num_vertex; i++)
             {
                 current_vertex = vertices[i];
@@ -298,19 +298,18 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
                 (*vLabel)[current_vertex] = new_label;
             }
 
-#pragma omp single
+            #pragma omp single
             {
                 shuffle(edges, num_edge, rng);
             }
         }
     }
 
-#ifdef DEBUG
+    #ifdef DEBUG
     std::cout << "Time Community for: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
     start = std::chrono::steady_clock::now();
-#endif // DEBUG
+    #endif // DEBUG
 
-    //TODO: reverse map parallel???
     //Get sets of Vertices lables
     std::unordered_map<int, std::unordered_set<int> *> *vertices_label_set = reverse_map(vLabel);
     //Get sets of Edges lables
@@ -323,19 +322,15 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     int *vertices_labels = (int *)calloc(num_vertex, sizeof(int));
     int *edges_labels = (int *)calloc(num_edge, sizeof(int));
 
-    //TODO questa regione ha inserimenti quindi la parallelizzazione non è banale
     for (auto it = vertices_label_set->begin(); it != vertices_label_set->end(); it++)
         vertices_sets->insert(it->second);
 
-    //TODO questa regione ha inserimenti quindi la parallelizzazione non è banale
     for (auto it = edges_label_set->begin(); it != edges_label_set->end(); it++)
         edges_set->insert(it->second);
 
-    //TODO questa regione ha inserimenti quindi la parallelizzazione non è banale
     for (int i = 0; i < num_vertex; i++)
         vertices_labels[i] = vLabel->at(i);
 
-    //TODO questa regione ha inserimenti quindi la parallelizzazione non è banale
     for (int i = 0; i < num_edge; i++)
         if (IS_EDGE_EMPTY(h, i))
             edges_labels[i] = -1;
@@ -349,9 +344,9 @@ find_communities_struct *find_communities(HyperGraph *h, CFLabelPropagationFinde
     delete (vertices_label_set);
     delete (edges_label_set);
 
-#ifdef DEBUG
+    #ifdef DEBUG
     std::cout << "Parameter finalization for: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() / 1000.0 << std::endl;
-#endif // DEBUG
+    #endif // DEBUG
 
     return new find_communities_struct(vertices_sets, edges_set, vertices_labels, h->nVertex, edges_labels, h->nEdge, current_iter);
 }

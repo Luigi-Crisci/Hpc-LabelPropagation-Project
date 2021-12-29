@@ -1,3 +1,5 @@
+#pragma once 
+
 #include <map>
 #include <unordered_set>
 #include <unordered_map>
@@ -30,7 +32,7 @@ typedef struct CFLabelPropagationFinder
 /*
     Hyper-graph structure
 */
-typedef struct HyperGraph
+struct HyperGraph
 {
     int nVertex, nEdge;
     std::map<int, bool> **v2he, **he2v;
@@ -48,7 +50,23 @@ typedef struct HyperGraph
             he2v[i] = new std::map<int, bool>;
     }
 
-} HyperGraph;
+    ~HyperGraph()
+    {
+        for (int i = 0; i < nVertex; i++)
+            delete v2he[i];
+        for (int i = 0; i < nEdge; i++)
+            delete he2v[i];
+        free(v2he);
+        free(he2v);
+    }
+
+    void add_vertex_to_edge(int v, int e)
+    {
+        v2he[v]->insert(std::pair<int, bool>(e, true));
+        he2v[e]->insert(std::pair<int, bool>(v, true));
+    }
+
+};
 
 typedef struct find_communities_struct
 {
